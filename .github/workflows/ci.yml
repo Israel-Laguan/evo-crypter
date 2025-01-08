@@ -32,14 +32,17 @@ jobs:
           - os: macos-latest
             c_compiler: clang
             build_dir: build
-        exclude:
           - os: windows-2019
             c_compiler: gcc
+            build_dir: build
           - os: windows-2019
             c_compiler: clang
+            build_dir: build
           - os: windows-2022
             c_compiler: gcc
+            build_dir: build
           - os: windows-2022
+            build_dir: build
             c_compiler: clang
 
     steps:
