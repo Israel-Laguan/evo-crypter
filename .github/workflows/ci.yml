@@ -70,15 +70,24 @@ jobs:
         msystem: MINGW64 # Use MINGW64 for 64-bit builds
         install: mingw-w64-x86_64-toolchain mingw-w64-x86_64-winpthreads-git mingw-w64-x86_64-cmake mingw-w64-x86_64-make
         update: true
+    
+    - name: Clean Build Directory (Windows)
+      if: runner.os == 'Windows'
+      shell: msys2 {0}
+      run: |
+        if (Test-Path -Path ${{ steps.strings.outputs.build-output-dir }}) {
+          rm -rf ${{ steps.strings.outputs.build-output-dir }}
+        }
   
     - name: Configure CMake (Windows)
       if: runner.os == 'Windows'
       shell: msys2 {0}
       run: |
-        cmake -B ${{ steps.strings.outputs.build-output-dir }} `
+        cd ${{ github.workspace }}
+        /mingw64/bin/cmake -B ${{ steps.strings.outputs.build-output-dir }} `
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} `
           -G "Unix Makefiles" `
-          -S ${{ github.workspace }}
+          --debug-trycompile
 
     - name: Configure CMake (Not Windows)
       if: runner.os != 'Windows'
