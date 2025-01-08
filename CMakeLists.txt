@@ -37,12 +37,12 @@ if(MSVC)
     # Find pthreads4w
     find_path(PTHREADS4W_INCLUDE_DIR
         NAMES pthread.h
-        PATHS "C:/pthreads4w/include" # Adjust this to where you extracted pthreads4w
+        PATHS "${CMAKE_SOURCE_DIR}/pthreads4w/include"
     )
 
     find_library(PTHREADS4W_LIBRARY
         NAMES pthreadVC2.lib # Or the appropriate .lib file for your pthreads4w version
-        PATHS "C:/pthreads4w/lib" # Adjust this to where you extracted pthreads4w
+        PATHS "${CMAKE_SOURCE_DIR}/pthreads4w/lib"
     )
 
     if (PTHREADS4W_INCLUDE_DIR AND PTHREADS4W_LIBRARY)
