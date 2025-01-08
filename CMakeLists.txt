@@ -28,9 +28,9 @@ target_link_libraries(evo Threads::Threads)
 
 # Set compile options
 target_compile_options(evo PRIVATE
-    -Wall
-    -Wextra
-    -g  # Enable debugging symbols
+    $<$<OR:$<CXX_COMPILER_ID:GNU>,$<CXX_COMPILER_ID:Clang>>:-Wall -Wextra>
+    $<$<CXX_COMPILER_ID:MSVC>:/W3>
+    -g
 )
 
 # Install target (optional)

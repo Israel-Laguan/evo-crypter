@@ -41,6 +41,12 @@ jobs:
             c_compiler: gcc
           - os: windows-2022
             c_compiler: clang
+          - os: ubuntu-latest
+            c_compiler: cl
+          - os: ubuntu-20.04
+            c_compiler: cl
+          - os: macos-latest
+            c_compiler: cl
 
     steps:
     - uses: actions/checkout@v4
