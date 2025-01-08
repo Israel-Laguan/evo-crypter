@@ -70,7 +70,7 @@ jobs:
         $pthreads4w_version = "version-3.1.0-release" # The specific tag
         $pthreads4w_url = "https://github.com/GerHobbelt/pthread-win32/archive/refs/tags/${pthreads4w_version}.zip"
         $pthreads4w_extract_dir = "${{ runner.temp }}/pthreads4w"
-        $pthreads4w_install_dir = "C:/pthreads4w"
+        $pthreads4w_install_dir = "${{ github.workspace }}/pthreads4w" # Install to the D: drive (workspace)
 
         # Download pthreads4w
         Write-Host "Downloading pthreads4w from: ${pthreads4w_url}"
@@ -118,10 +118,8 @@ jobs:
         -DCMAKE_CXX_COMPILER=${{ matrix.c_compiler }}
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+        -DCMAKE_PREFIX_PATH=${{ github.workspace }}/pthreads4w
         -S ${{ github.workspace }}
-      env:
-        PTHREADS4W_INCLUDE_DIR: C:/pthreads4w/include
-        PTHREADS4W_LIBRARY: C:/pthreads4w/lib
 
     - name: Build
       run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
