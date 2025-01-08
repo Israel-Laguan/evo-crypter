@@ -83,10 +83,10 @@ jobs:
       if: runner.os == 'Windows'
       shell: msys2 {0}
       run: |
-        cd ${{ github.workspace }}
         /mingw64/bin/cmake -B ${{ steps.strings.outputs.build-output-dir }} `
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} `
           -G "Unix Makefiles" `
+          -S ${{ github.workspace }}
           --debug-trycompile
 
     - name: Configure CMake (Not Windows)
