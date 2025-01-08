@@ -75,8 +75,7 @@ jobs:
       if: runner.os == 'Windows'
       shell: msys2 {0}
       run: |
-        export PATH="/mingw64/bin:$PATH"
-        cmake -B ${{ steps.strings.outputs.build-output-dir }} `
+        /mingw64/bin/cmake -B ${{ steps.strings.outputs.build-output-dir }} `
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} `
           -S ${{ github.workspace }}
 
