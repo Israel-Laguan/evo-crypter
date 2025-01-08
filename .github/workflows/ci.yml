@@ -75,9 +75,9 @@ jobs:
       if: runner.os == 'Windows'
       shell: msys2 {0}
       run: |
-        if (Test-Path -Path ${{ steps.strings.outputs.build-output-dir }}) {
+        if [ -d "${{ steps.strings.outputs.build-output-dir }}" ]; then
           rm -rf ${{ steps.strings.outputs.build-output-dir }}
-        }
+        fi
   
     - name: Configure CMake (Windows)
       if: runner.os == 'Windows'
