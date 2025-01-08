@@ -80,12 +80,16 @@ jobs:
         mkdir "$pthreads4w_extract_dir"
         tar -xf "${{ runner.temp }}/pthreads4w.zip" -C "$pthreads4w_extract_dir"
 
+        # Find the actual include and lib directories
+        $include_dir = Get-ChildItem -Path "$pthreads4w_extract_dir" -Directory -Recurse | Where-Object {$_.Name -eq "include"} | Select-Object -First 1 -ExpandProperty FullName
+        $lib_dir = Get-ChildItem -Path "$pthreads4w_extract_dir" -Directory -Recurse | Where-Object {$_.Name -eq "lib"} | Select-Object -First 1 -ExpandProperty FullName
+
         # Install pthreads4w to a system-wide location
         if (-Not (Test-Path -Path $pthreads4w_install_dir)) {
           mkdir $pthreads4w_install_dir
         }
-        Copy-Item -Path "$pthreads4w_extract_dir/win-pthread-${pthreads4w_version}/include" -Destination "$pthreads4w_install_dir" -Recurse
-        Copy-Item -Path "$pthreads4w_extract_dir/win-pthread-${pthreads4w_version}/lib" -Destination "$pthreads4w_install_dir" -Recurse
+        Copy-Item -Path "$include_dir\*" -Destination "$pthreads4w_install_dir\include" -Recurse
+        Copy-Item -Path "$lib_dir\*" -Destination "$pthreads4w_install_dir\lib" -Recurse
 
     - name: Configure CMake
       run: >
