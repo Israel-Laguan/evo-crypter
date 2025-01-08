@@ -33,7 +33,11 @@ static char *prepare_chunk(const char *buffer)
 static void *process_chunk(void *arg)
 {
     ChunkProcessingArgs *args = (ChunkProcessingArgs *)arg;
-    apply_mutations_to_chunk(args->buffer, args->generations, args->decrypt);
+    int generations_len = strlen(args->generations);
+    for (int i = 0; i < generations_len; i++)
+    {
+        apply_mutations_to_chunk(args, args->generations, args->decrypt);
+    }
     return NULL;
 }
 

@@ -12,14 +12,14 @@ The algorithm can be described as an iterative, function composition-based encry
 
 1. **Mutation Definition:**
     *   Developers define pairs of functions: `fn_<mutation_identifier>_up` for encryption and `fn_<mutation_identifier>_down` for decryption, where `<mutation_identifier>` is a unique symbol (e.g., number, letter, #, \*).
-    *   These functions are implemented in `src/mutations/mutations.c`.
+    *   These functions are implemented in `src/mutations/mod.c`.
     *   Each `fn_<mutation_identifier>_up` function takes a string (a chunk of the file) as input and modifies it in place, simulating a mutation.
     *   The corresponding `fn_<mutation_identifier>_down` function reverses the operation of `fn_<mutation_identifier>_up`.
 
 2. **Generation Sequence:**
     *   The user provides a comma-separated string (e.g., "1,a,#,4") that specifies the sequence of mutations to be applied.
     *   This sequence is referred to as the "generation sequence."
-    *   The length of the generation sequence determines the number of iterations (generations) the mutations will be applied.
+    *   **The length of the generation sequence determines the number of iterations (generations) the mutations will be applied.** For example, if the generation sequence is "1,2", the sequence "1,2" will be applied twice to each chunk of the input file.
     *   The generation sequence is passed as a command-line argument (`--generations`).
 
 3. **Encryption Process:**
@@ -27,7 +27,7 @@ The algorithm can be described as an iterative, function composition-based encry
     *   The `apply_mutation_up` function acts as a dispatcher, selecting the appropriate `fn_<mutation_identifier>_up` function based on the current symbol in the generation sequence.
     *   The selected `fn_<mutation_identifier>_up` function is applied to the data chunk.
     *   This process is repeated for each symbol in the generation sequence, effectively applying multiple mutations in order.
-    *   The mutations are applied iteratively for a number of times equal to the length of the generation sequence. Each iteration represents a "generation" of mutation.
+    *   **The mutations are applied iteratively for a number of times equal to the length of the generation sequence. Each iteration represents a "generation" of mutation.**
     *   The transformed data is written to the output file (`encrypted.txt`).
 
 4. **Decryption Process:**
@@ -35,7 +35,7 @@ The algorithm can be described as an iterative, function composition-based encry
     *   The `apply_mutation_down` function acts as a dispatcher, selecting the appropriate `fn_<mutation_identifier>_down` function.
     *   The `fn_<mutation_identifier>_down` functions are applied in the reverse order of encryption.
     *   Each `fn_<mutation_identifier>_down` function reverses the transformation, restoring the original data.
-    *   The mutations are reversed for the same number of generations as the encryption.
+    *   **The mutations are reversed for the same number of generations as the encryption.**
     *   The decrypted data is written to the output file (`decrypted.txt`).
 
 5. **Multi-threading:**
@@ -79,7 +79,9 @@ The algorithm can be described as an iterative, function composition-based encry
     ```bash
     make all
     ```
+
     or
+
     ```bash
     ./scripts/build.sh
     ```
@@ -92,10 +94,10 @@ Run the encryption tool:
 ./evo --input <input_file> --threads <num_threads> --generations <generation_sequence> [-d]
 ```
 
-- <input_file>: The path to the input file.
-- <threads>: The number of threads to use for processing (1 for single-threaded).
-- <generation_sequence>: A comma-separated string representing the sequence of mutations to apply (e.g., "1,2,a,#"). The symbols used here must match the symbols in your fn_<mutation_identifier>_up/down functions. The length of this sequence determines the number of iterations (generations).
-- [-d]: Optional flag to decrypt instead of encrypt.
+*   `<input_file>`: The path to the input file.
+*   `<threads>`: The number of threads to use for processing (1 for single-threaded).
+*   `<generation_sequence>`: A comma-separated string representing the sequence of mutations to apply (e.g., "1,2,a,#"). The symbols used here must match the symbols in your `fn_<mutation_identifier>_up/down` functions. **The length of this sequence determines the number of iterations (generations).**
+*   `[-d]`: Optional flag to decrypt instead of encrypt.
 
 Example:
 
@@ -116,6 +118,7 @@ Example:
 
 ```bash
 ./scripts/build.sh
+./scripts/migrate.sh
 ```
 
 ## Contributing
@@ -124,21 +127,26 @@ See `docs/MUTATIONS.md` for instructions on adding new functions and contributin
 
 **Important Note for Developers:**
 
-*   The `src/mutations/functions/` files are where you implement your encryption/decryption logic.
+*   The `src/mutations/mod.c` file is where you implement your encryption/decryption logic.
 *   **Do not** commit sensitive encryption functions or keys to a public repository.
 
 **How to Use:**
 
 1. **Clone:** `git clone https://github.com/Israel-Laguan/evo-crypter.git`
 2. **Build:**
+
     ```bash
     make all
     ```
+
     or
+
     ```bash
     ./scripts/build.sh
     ```
+
 3. **Run:**
+
     ```bash
     ./evo --input test_input.txt --threads 4 --generations 1,2,#
     ```
@@ -148,7 +156,8 @@ See `docs/MUTATIONS.md` for instructions on adding new functions and contributin
 ```
 evo-crypter/
 ├── docs/
-│   └── developer_guidelines.md
+│   ├── FLAGS.md
+│   └── MUTATIONS.md
 ├── scripts/
 │   ├── build.sh
 │   ├── migrate.sh
@@ -167,7 +176,9 @@ evo-crypter/
 │   │   ├── mod.h
 │   │   ├── mod.c
 │   │   ├── utils.h
-│   │   └── utils.c
+│   │   ├── utils.c
+│   │   └── input_processing.h
+│   │   └── input_processing.c
 │   ├── mutations/
 │   │   ├── mod.h
 │   │   ├── mod.c

@@ -120,25 +120,23 @@ void *apply_mutations_to_chunk(void *arg, const char *generations, bool decrypt)
         reverse_generations(generations_copy);
     }
 
-    for (int i = 0; i < strlen(generations_copy); i++)
+    // Iterate through the generation sequence
+    char *token = strtok(generations_copy, ",");
+    while (token != NULL)
     {
-        char *token = strtok(i == 0 ? generations_copy : NULL, ",");
-        while (token != NULL)
+        for (int j = 0; j < strlen(token); j++)
         {
-            for (int j = 0; j < strlen(token); j++)
+            char symbol = token[j];
+            if (decrypt)
             {
-                char symbol = token[j];
-                if (decrypt)
-                {
-                    apply_mutation_down(symbol, buffer_copy);
-                }
-                else
-                {
-                    apply_mutation_up(symbol, buffer_copy);
-                }
+                apply_mutation_down(symbol, buffer_copy);
             }
-            token = strtok(NULL, ",");
+            else
+            {
+                apply_mutation_up(symbol, buffer_copy);
+            }
         }
+        token = strtok(NULL, ",");
     }
 
     strcpy(args->buffer, buffer_copy);

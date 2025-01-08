@@ -3,6 +3,7 @@ This document outlines the guidelines for contributing to the `evo-crypter` proj
 ## Adding New Mutation Functions
 
 1. **Implement the functions in `src/mutations/functions`:**
+
     *   Create a new file or use a file with an empty implementation.
     *   Create two functions for each mutation:
         *   `fn_<mutation_identifier>_up`: Encrypts the input string.
@@ -36,11 +37,12 @@ This document outlines the guidelines for contributing to the `evo-crypter` proj
     ```
 
 3. **Update the dispatch functions in `src/mutations/mod.c`:**
+
     *   Modify the `apply_mutation_up` and `apply_mutation_down` functions to include your new mutation functions.
     *   Use a `switch` statement based on the `symbol` to call the appropriate function.
 
     ```c
-    // src/mutations/mutations.c
+    // src/mutations/mod.c
 
     void apply_mutation_up(char symbol, char *str) {
         switch (symbol) {
@@ -68,8 +70,10 @@ This document outlines the guidelines for contributing to the `evo-crypter` proj
     ```
 
 4. **Build and Test:**
+
     *   Rebuild the project using `make all` or `./scripts/build.sh`.
     *   Test your new mutation functions using the command-line interface:
+
         ```bash
         ./evo --input <input_file> --threads <num_threads> --generations <your_mutation_symbol>
         ```
