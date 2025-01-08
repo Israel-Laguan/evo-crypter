@@ -88,8 +88,27 @@ jobs:
         if (-Not (Test-Path -Path $pthreads4w_install_dir)) {
           mkdir $pthreads4w_install_dir
         }
-        Copy-Item -Path "$include_dir\*" -Destination "$pthreads4w_install_dir\include" -Recurse
-        Copy-Item -Path "$lib_dir\*" -Destination "$pthreads4w_install_dir\lib" -Recurse
+
+        # Ensure destination directories exist and are not files
+        $include_dest_dir = "$pthreads4w_install_dir\include"
+        if (Test-Path -Path $include_dest_dir -PathType Leaf) {
+          Remove-Item -Path $include_dest_dir -Force
+        }
+        if (-Not (Test-Path -Path $include_dest_dir)) {
+          mkdir $include_dest_dir
+        }
+
+        $lib_dest_dir = "$pthreads4w_install_dir\lib"
+        if (Test-Path -Path $lib_dest_dir -PathType Leaf) {
+          Remove-Item -Path $lib_dest_dir -Force
+        }
+        if (-Not (Test-Path -Path $lib_dest_dir)) {
+          mkdir $lib_dest_dir
+        }
+
+        # Copy the files
+        Copy-Item -Path "$include_dir\*" -Destination "$include_dest_dir" -Recurse
+        Copy-Item -Path "$lib_dir\*" -Destination "$lib_dest_dir" -Recurse
 
     - name: Configure CMake
       run: >
