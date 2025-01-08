@@ -68,7 +68,7 @@ jobs:
       uses: msys2/setup-msys2@v2
       with:
         msystem: MINGW64 # Use MINGW64 for 64-bit builds
-        install: mingw-w64-x86_64-toolchain mingw-w64-x86_64-winpthreads-git cmake
+        install: mingw-w64-x86_64-toolchain mingw-w64-x86_64-winpthreads-git mingw-w64-x86_64-cmake mingw-w64-x86_64-make
         update: true
   
     - name: Configure CMake (Windows)
@@ -76,6 +76,7 @@ jobs:
       shell: msys2 {0}
       run: |
         cmake -B ${{ steps.strings.outputs.build-output-dir }} `
+          -G "Unix Makefiles" `
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} `
           -S ${{ github.workspace }}
 
