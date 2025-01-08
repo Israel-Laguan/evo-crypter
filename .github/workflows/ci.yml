@@ -63,68 +63,92 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y cppcheck
 
-    - name: Install pthreads4w (Windows)
-      if: runner.os == 'Windows'
-      shell: pwsh
-      run: |
-        $pthreads4w_version = "version-3.1.0-release" # The specific tag
-        $pthreads4w_url = "https://github.com/GerHobbelt/pthread-win32/archive/refs/tags/${pthreads4w_version}.zip"
-        $pthreads4w_extract_dir = "${{ runner.temp }}/pthreads4w"
-        $pthreads4w_install_dir = "${{ github.workspace }}/pthreads4w"
-        $pthreads4w_zip_file = "${{ runner.temp }}/pthreads4w.zip"
-
-        # Download pthreads4w
-        Write-Host "Downloading pthreads4w from: ${pthreads4w_url}"
-        Invoke-WebRequest -Uri "${pthreads4w_url}" -OutFile $pthreads4w_zip_file # Use -OutFile
-
-        # Print message indicating download completion
-        Write-Host "pthreads4w downloaded to: ${pthreads4w_zip_file}"
-
-        # Extract pthreads4w using Expand-Archive
-        if (Test-Path -Path $pthreads4w_extract_dir) {
-          Remove-Item -Path $pthreads4w_extract_dir -Recurse -Force
-        }
-        Expand-Archive -Path $pthreads4w_zip_file -DestinationPath $pthreads4w_extract_dir -Force
-
-        # Find the actual include and lib directories
-        $include_dir = Get-ChildItem -Path "$pthreads4w_extract_dir" -Directory -Recurse | Where-Object {$_.Name -eq "include"} | Select-Object -First 1 -ExpandProperty FullName
-        $lib_dir = Get-ChildItem -Path "$pthreads4w_extract_dir" -Directory -Recurse | Where-Object {$_.Name -eq "lib"} | Select-Object -First 1 -ExpandProperty FullName
-
-        # Check if include and lib directories were found
-        if (-Not $include_dir) {
-          Write-Error "Could not find 'include' directory in extracted pthreads4w archive."
-          exit 1
-        }
-        if (-Not $lib_dir) {
-          Write-Error "Could not find 'lib' directory in extracted pthreads4w archive."
-          exit 1
-        }
-
-        # Install pthreads4w to a system-wide location
-        if (-Not (Test-Path -Path $pthreads4w_install_dir)) {
-          mkdir $pthreads4w_install_dir
-        }
-
-        # Ensure destination directories exist and are not files
-        $include_dest_dir = "$pthreads4w_install_dir\include"
-        if (Test-Path -Path $include_dest_dir -PathType Leaf) {
-          Remove-Item -Path $include_dest_dir -Force
-        }
-        if (-Not (Test-Path -Path $include_dest_dir)) {
-          mkdir $include_dest_dir
-        }
-
-        $lib_dest_dir = "$pthreads4w_install_dir\lib"
-        if (Test-Path -Path $lib_dest_dir -PathType Leaf) {
-          Remove-Item -Path $lib_dest_dir -Force
-        }
-        if (-Not (Test-Path -Path $lib_dest_dir)) {
-          mkdir $lib_dest_dir
-        }
-
-        # Copy the files
-        Copy-Item -Path "$include_dir\*" -Destination "$include_dest_dir" -Recurse
-        Copy-Item -Path "$lib_dir\*" -Destination "$lib_dest_dir" -Recurse
+        - name: Install pthreads4w (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $pthreads4w_version = "version-3.1.0-release" # The specific tag
+          $pthreads4w_url = "https://github.com/GerHobbelt/pthread-win32/archive/refs/tags/${pthreads4w_version}.zip"
+          $pthreads4w_extract_dir = "${{ runner.temp }}/pthreads4w"
+          $pthreads4w_install_dir = "${{ github.workspace }}/pthreads4w"
+          $pthreads4w_zip_file = "${{ runner.temp }}/pthreads4w.zip" # Define zip file path
+  
+          # Download pthreads4w
+          Write-Host "Downloading pthreads4w from: ${pthreads4w_url}"
+          Invoke-WebRequest -Uri "${pthreads4w_url}" -OutFile $pthreads4w_zip_file # Use -OutFile
+  
+          if ($LASTEXITCODE -ne 0) {
+            Write-Error "Error downloading pthreads4w."
+            exit 1
+          }
+  
+          # Print message indicating download completion
+          Write-Host "pthreads4w downloaded to: ${pthreads4w_zip_file}"
+  
+          # Extract pthreads4w using Expand-Archive
+          if (Test-Path -Path $pthreads4w_extract_dir) {
+            Remove-Item -Path $pthreads4w_extract_dir -Recurse -Force
+          }
+          Expand-Archive -Path $pthreads4w_zip_file -DestinationPath $pthreads4w_extract_dir -Force
+  
+          if ($LASTEXITCODE -ne 0) {
+            Write-Error "Error extracting pthreads4w archive."
+            exit 1
+          }
+  
+          # List contents of the extraction directory for debugging
+          Write-Host "Contents of extraction directory ($pthreads4w_extract_dir):"
+          Get-ChildItem -Path $pthreads4w_extract_dir -Recurse | Format-List
+  
+          # Find the actual include and lib directories
+          $include_dir = Get-ChildItem -Path "$pthreads4w_extract_dir" -Directory -Recurse | Where-Object {$_.Name -eq "include"} | Select-Object -First 1 -ExpandProperty FullName
+          $lib_dir = Get-ChildItem -Path "$pthreads4w_extract_dir" -Directory -Recurse | Where-Object {$_.Name -eq "lib"} | Select-Object -First 1 -ExpandProperty FullName
+  
+          # Check if include and lib directories were found
+          if (-Not $include_dir) {
+            Write-Error "Could not find 'include' directory in extracted pthreads4w archive."
+            exit 1
+          }
+          if (-Not $lib_dir) {
+            Write-Error "Could not find 'lib' directory in extracted pthreads4w archive."
+            exit 1
+          }
+  
+          # Install pthreads4w to a system-wide location
+          if (-Not (Test-Path -Path $pthreads4w_install_dir)) {
+            mkdir $pthreads4w_install_dir
+          }
+  
+          # Ensure destination directories exist and are not files
+          $include_dest_dir = "$pthreads4w_install_dir\include"
+          if (Test-Path -Path $include_dest_dir -PathType Leaf) {
+            Remove-Item -Path $include_dest_dir -Force
+          }
+          if (-Not (Test-Path -Path $include_dest_dir)) {
+            mkdir $include_dest_dir
+          }
+  
+          $lib_dest_dir = "$pthreads4w_install_dir\lib"
+          if (Test-Path -Path $lib_dest_dir -PathType Leaf) {
+            Remove-Item -Path $lib_dest_dir -Force
+          }
+          if (-Not (Test-Path -Path $lib_dest_dir)) {
+            mkdir $lib_dest_dir
+          }
+  
+          # Copy the files
+          Copy-Item -Path "$include_dir\*" -Destination "$include_dest_dir" -Recurse
+          if ($LASTEXITCODE -ne 0) {
+            Write-Error "Error copying include files."
+            exit 1
+          }
+          Copy-Item -Path "$lib_dir\*" -Destination "$lib_dest_dir" -Recurse
+          if ($LASTEXITCODE -ne 0) {
+            Write-Error "Error copying lib files."
+            exit 1
+          }
+  
+          Write-Host "pthreads4w installed successfully to: ${pthreads4w_install_dir}"
 
     - name: Configure CMake
       run: >
