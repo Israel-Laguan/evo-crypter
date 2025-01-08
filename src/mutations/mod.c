@@ -1,9 +1,7 @@
-// src/mutations/mod.c
-
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "mutation_functions.h"
+#include "mod.h"
 #include "functions/fn_1.c"
 #include "functions/fn_2.c"
 #include "functions/fn_3.c"
@@ -15,11 +13,7 @@
 #include "functions/fn_9.c"
 #include "functions/fn_ampersand.c"
 #include "functions/fn_asterisk.c"
-
-typedef struct
-{
-    char *buffer;
-} EvoThreadArgs;
+#include "../file/utils.h"
 
 void apply_mutation_up(char symbol, char *str) {
     switch (symbol) {
@@ -105,7 +99,7 @@ void apply_mutation_down(char symbol, char *str) {
 
 void *apply_mutations_to_chunk(void *arg, const char *generations, bool decrypt)
 {
-    EvoThreadArgs *args = (EvoThreadArgs *)arg;
+    ChunkProcessingArgs *args = (ChunkProcessingArgs *)arg;
     char *buffer_copy = strdup(args->buffer);
     if (!buffer_copy)
     {

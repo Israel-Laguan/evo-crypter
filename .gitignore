@@ -50,3 +50,12 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# Project specifics
+
+build/
+*.o
+encryptor
+encrypted
+decrypted
+functions.c

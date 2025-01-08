@@ -13,7 +13,7 @@ typedef struct
     bool help;
 } Config;
 
-Config parse_config(int argc, char *argv[]);
+Config initialize_config(int argc, char *argv[]);
 void free_config(Config *config);
 
 #endif // EVO_CONFIG_MOD_H

@@ -1,7 +1,15 @@
-// src/mutations/mutation_functions.h
-
 #ifndef EVO_MUTATIONS_MOD_H
 #define EVO_MUTATIONS_MOD_H
+
+#include <stdbool.h>
+
+// Structure to hold arguments for the chunk processing function
+typedef struct
+{
+    char *buffer;
+    const char *generations;
+    bool decrypt;
+} ChunkProcessingArgs;
 
 // all mutation functions
 void fn_1_up(char *str);
@@ -30,5 +38,6 @@ void fn_asterisk_down(char *str);
 // Dispatch functions
 void apply_mutation_up(char symbol, char *str);
 void apply_mutation_down(char symbol, char *str);
+void *apply_mutations_to_chunk(void *arg, const char *generations, bool decrypt);
 
 #endif // EVO_MUTATIONS_MOD_H
