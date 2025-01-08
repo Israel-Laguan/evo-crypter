@@ -76,8 +76,8 @@ jobs:
       shell: msys2 {0}
       run: |
         cmake -B ${{ steps.strings.outputs.build-output-dir }} `
-          -G "Unix Makefiles" `
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} `
+          -G "Unix Makefiles" `
           -S ${{ github.workspace }}
 
     - name: Configure CMake (Not Windows)
@@ -90,9 +90,11 @@ jobs:
         -S ${{ github.workspace }}
 
     - name: Build
-      shell: msys2 {0}
       if: runner.os == 'Windows'
-      run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
+      shell: msys2 {0}
+      run: |
+        cd ${{ steps.strings.outputs.build-output-dir }}
+        mingw32-make.exe
 
     - name: Build
       if: runner.os != 'Windows'
