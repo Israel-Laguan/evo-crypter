@@ -75,10 +75,11 @@ jobs:
 
         # Download pthreads4w
         Write-Host "Downloading pthreads4w from: ${pthreads4w_url}"
-        Invoke-WebRequest -Uri "${pthreads4w_url}" -OutFile $pthreads4w_zip_file # Use -OutFile
-
-        if ($LASTEXITCODE -ne 0) {
-          Write-Error "Error downloading pthreads4w."
+        try {
+          Invoke-WebRequest -Uri "${pthreads4w_url}" -OutFile $pthreads4w_zip_file -PassThru
+        }
+        catch {
+          Write-Error "Error downloading pthreads4w: $($_.Exception.Message)"
           exit 1
         }
 
@@ -89,10 +90,11 @@ jobs:
         if (Test-Path -Path $pthreads4w_extract_dir) {
           Remove-Item -Path $pthreads4w_extract_dir -Recurse -Force
         }
-        Expand-Archive -Path $pthreads4w_zip_file -DestinationPath $pthreads4w_extract_dir -Force
-
-        if ($LASTEXITCODE -ne 0) {
-          Write-Error "Error extracting pthreads4w archive."
+        try {
+          Expand-Archive -Path $pthreads4w_zip_file -DestinationPath $pthreads4w_extract_dir -Force
+        }
+        catch {
+          Write-Error "Error extracting pthreads4w archive: $($_.Exception.Message)"
           exit 1
         }
 
@@ -137,14 +139,19 @@ jobs:
         }
 
         # Copy the files
-        Copy-Item -Path "$include_dir\*" -Destination "$include_dest_dir" -Recurse
-        if ($LASTEXITCODE -ne 0) {
-          Write-Error "Error copying include files."
+        try {
+          Copy-Item -Path "$include_dir\*" -Destination "$include_dest_dir" -Recurse
+        }
+        catch {
+          Write-Error "Error copying include files: $($_.Exception.Message)"
           exit 1
         }
-        Copy-Item -Path "$lib_dir\*" -Destination "$lib_dest_dir" -Recurse
-        if ($LASTEXITCODE -ne 0) {
-          Write-Error "Error copying lib files."
+
+        try {
+          Copy-Item -Path "$lib_dir\*" -Destination "$lib_dest_dir" -Recurse
+        }
+        catch {
+          Write-Error "Error copying lib files: $($_.Exception.Message)"
           exit 1
         }
 
