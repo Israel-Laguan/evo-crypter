@@ -63,6 +63,30 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y cppcheck
 
+    - name: Install pthreads4w (Windows)
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: |
+        $pthreads4w_version = "3.0.0"
+        $pthreads4w_url = "https://github.com/win-pthread/win-pthread/archive/refs/tags/v${pthreads4w_version}.zip"
+        $pthreads4w_extract_dir = "${{ runner.temp }}/pthreads4w"
+        $pthreads4w_install_dir = "C:/pthreads4w"
+
+        # Download pthreads4w
+        Write-Host "Downloading pthreads4w from: ${pthreads4w_url}"
+        curl -L "${pthreads4w_url}" -o "${{ runner.temp }}/pthreads4w.zip"
+
+        # Extract pthreads4w
+        mkdir "$pthreads4w_extract_dir"
+        tar -xf "${{ runner.temp }}/pthreads4w.zip" -C "$pthreads4w_extract_dir"
+
+        # Install pthreads4w to a system-wide location
+        if (-Not (Test-Path -Path $pthreads4w_install_dir)) {
+          mkdir $pthreads4w_install_dir
+        }
+        Copy-Item -Path "$pthreads4w_extract_dir/win-pthread-${pthreads4w_version}/include" -Destination "$pthreads4w_install_dir" -Recurse
+        Copy-Item -Path "$pthreads4w_extract_dir/win-pthread-${pthreads4w_version}/lib" -Destination "$pthreads4w_install_dir" -Recurse
+
     - name: Configure CMake
       run: >
         cmake -B ${{ steps.strings.outputs.build-output-dir }}
@@ -70,6 +94,9 @@ jobs:
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         -S ${{ github.workspace }}
+      env:
+        PTHREADS4W_INCLUDE_DIR: C:/pthreads4w/include
+        PTHREADS4W_LIBRARY: C:/pthreads4w/lib
 
     - name: Build
       run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}

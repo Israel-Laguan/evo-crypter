@@ -33,6 +33,28 @@ target_compile_options(evo PRIVATE
     -g
 )
 
+if(MSVC)
+    # Find pthreads4w
+    find_path(PTHREADS4W_INCLUDE_DIR
+        NAMES pthread.h
+        PATHS "C:/pthreads4w/include" # Adjust this to where you extracted pthreads4w
+    )
+
+    find_library(PTHREADS4W_LIBRARY
+        NAMES pthreadVC2.lib # Or the appropriate .lib file for your pthreads4w version
+        PATHS "C:/pthreads4w/lib" # Adjust this to where you extracted pthreads4w
+    )
+
+    if (PTHREADS4W_INCLUDE_DIR AND PTHREADS4W_LIBRARY)
+        message(STATUS "Found pthreads4w: ${PTHREADS4W_INCLUDE_DIR}")
+        target_include_directories(evo PRIVATE ${PTHREADS4W_INCLUDE_DIR})
+        target_link_libraries(evo PRIVATE ${PTHREADS4W_LIBRARY})
+        set(THREADS_FOUND TRUE)
+    else()
+        message(FATAL_ERROR "Could not find pthreads4w. Please install it and set PTHREADS4W_INCLUDE_DIR and PTHREADS4W_LIBRARY.")
+    endif()
+endif()
+
 # Install target (optional)
 install(TARGETS evo DESTINATION bin)
 
