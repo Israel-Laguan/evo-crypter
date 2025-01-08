@@ -30,10 +30,12 @@ void handle_generations_flag(Config *config, char *value) {
 }
 
 void handle_decrypt_flag(Config *config, char *value) {
+    (void)value;
     config->decrypt = true;
 }
 
 void handle_help_flag(Config *config, char *value) {
+    (void)value;
     config->help = true;
 }
 
