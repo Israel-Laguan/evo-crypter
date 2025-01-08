@@ -15,7 +15,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, ubuntu-20.04, windows-2019, windows-2022, macos-latest]
         build_type: [Release]
-        c_compiler: [gcc, clang]
+        c_compiler: [gcc, clang, cl]
         include:
           - os: ubuntu-latest
             c_compiler: gcc
@@ -24,21 +24,21 @@ jobs:
             c_compiler: gcc
             build_dir: build
           - os: windows-2019
-            c_compiler: gcc
+            c_compiler: cl
             build_dir: build
           - os: windows-2022
-            c_compiler: gcc
+            c_compiler: cl
             build_dir: build
           - os: macos-latest
             c_compiler: clang
             build_dir: build
         exclude:
           - os: windows-2019
-            c_compiler: cl
+            c_compiler: gcc
           - os: windows-2019
             c_compiler: clang
           - os: windows-2022
-            c_compiler: cl
+            c_compiler: gcc
           - os: windows-2022
             c_compiler: clang
 
@@ -62,6 +62,7 @@ jobs:
         cmake -B ${{ steps.strings.outputs.build-output-dir }}
         -DCMAKE_CXX_COMPILER=${{ matrix.c_compiler }}
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
+        -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         -S ${{ github.workspace }}
 
     - name: Build
@@ -69,7 +70,7 @@ jobs:
 
     - name: Test
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
-      run: ctest --build-config ${{ matrix.build_type }} # Use --build-config
+      run: ctest --build-config ${{ matrix.build_type }}
 
   build-test-lint-debian:
     if: github.ref != 'refs/heads/main' && github.ref != 'refs/heads/dev'
