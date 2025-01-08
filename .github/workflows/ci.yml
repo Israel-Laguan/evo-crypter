@@ -71,14 +71,29 @@ jobs:
         $pthreads4w_url = "https://github.com/win-pthread/win-pthread/archive/refs/tags/v${pthreads4w_version}.zip"
         $pthreads4w_extract_dir = "${{ runner.temp }}/pthreads4w"
         $pthreads4w_install_dir = "C:/pthreads4w"
+        $pthreads4w_zip_file = "${{ runner.temp }}/pthreads4w.zip"
 
-        # Download pthreads4w
+        # Download pthreads4w and check for success
         Write-Host "Downloading pthreads4w from: ${pthreads4w_url}"
-        curl -L "${pthreads4w_url}" -o "${{ runner.temp }}/pthreads4w.zip"
+        $response = Invoke-WebRequest -Uri "${pthreads4w_url}" -OutFile $pthreads4w_zip_file -PassThru
+        if ($response.StatusCode -ne 200) {
+          Write-Error "Failed to download pthreads4w. Status code: $($response.StatusCode)"
+          exit 1
+        }
 
-        # Extract pthreads4w
-        mkdir "$pthreads4w_extract_dir"
-        tar -xf "${{ runner.temp }}/pthreads4w.zip" -C "$pthreads4w_extract_dir"
+        # Verify downloaded file size (Optional) - Adjust expected size if needed
+        # $expected_size = 12345  # Replace with the expected file size in bytes
+        # $actual_size = (Get-Item $pthreads4w_zip_file).Length
+        # if ($actual_size -ne $expected_size) {
+        #   Write-Error "Downloaded file size does not match expected size. Got $($actual_size) bytes, expected $($expected_size) bytes."
+        #   exit 1
+        # }
+
+        # Extract pthreads4w using Expand-Archive
+        if (Test-Path -Path $pthreads4w_extract_dir) {
+          Remove-Item -Path $pthreads4w_extract_dir -Recurse -Force
+        }
+        Expand-Archive -Path $pthreads4w_zip_file -DestinationPath $pthreads4w_extract_dir -Force
 
         # Find the actual include and lib directories
         $include_dir = Get-ChildItem -Path "$pthreads4w_extract_dir" -Directory -Recurse | Where-Object {$_.Name -eq "include"} | Select-Object -First 1 -ExpandProperty FullName
