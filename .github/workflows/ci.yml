@@ -70,17 +70,18 @@ jobs:
         $pthreads4w_version = "version-3.1.0-release" # The specific tag
         $pthreads4w_url = "https://github.com/GerHobbelt/pthread-win32/archive/refs/tags/${pthreads4w_version}.zip"
         $pthreads4w_extract_dir = "${{ runner.temp }}/pthreads4w"
-        $pthreads4w_install_dir = "${{ github.workspace }}/pthreads4w" # Install to the D: drive (workspace)
+        $pthreads4w_install_dir = "${{ github.workspace }}/pthreads4w"
+        $pthreads4w_zip_file = "${{ runner.temp }}/pthreads4w.zip"
 
         # Download pthreads4w
         Write-Host "Downloading pthreads4w from: ${pthreads4w_url}"
-        Invoke-WebRequest -Uri "${pthreads4w_url}" -OutFile "${{ runner.temp }}/pthreads4w.zip"
+        Invoke-WebRequest -Uri "${pthreads4w_url}" -OutFile $pthreads4w_zip_file # Use -OutFile
 
         # Extract pthreads4w using Expand-Archive
         if (Test-Path -Path $pthreads4w_extract_dir) {
           Remove-Item -Path $pthreads4w_extract_dir -Recurse -Force
         }
-        Expand-Archive -Path "${{ runner.temp }}/pthreads4w.zip" -DestinationPath $pthreads4w_extract_dir -Force
+        Expand-Archive -Path $pthreads4w_zip_file -DestinationPath $pthreads4w_extract_dir -Force
 
         # Find the actual include and lib directories
         $include_dir = Get-ChildItem -Path "$pthreads4w_extract_dir" -Directory -Recurse | Where-Object {$_.Name -eq "include"} | Select-Object -First 1 -ExpandProperty FullName
