@@ -70,21 +70,26 @@ The algorithm can be described as an iterative, function composition-based encry
 1. Clone the repository:
 
     ```bash
-    git clone <repository_url>
+    git clone `git clone https://github.com/Israel-Laguan/evo-crypter.git`
     cd evo-crypter
     ```
 
-2. Build the project:
-
-    ```bash
-    make all
-    ```
-
-    or
+2. Build the project using CMake:
 
     ```bash
     ./scripts/build.sh
     ```
+
+    Or manually:
+
+    ```bash
+    mkdir build
+    cd build
+    cmake ..
+    cmake --build .
+    ```
+
+    This will generate the evo executable in the build directory.
 
 ## Usage
 
@@ -129,27 +134,6 @@ See `docs/MUTATIONS.md` for instructions on adding new functions and contributin
 
 *   The `src/mutations/mod.c` file is where you implement your encryption/decryption logic.
 *   **Do not** commit sensitive encryption functions or keys to a public repository.
-
-**How to Use:**
-
-1. **Clone:** `git clone https://github.com/Israel-Laguan/evo-crypter.git`
-2. **Build:**
-
-    ```bash
-    make all
-    ```
-
-    or
-
-    ```bash
-    ./scripts/build.sh
-    ```
-
-3. **Run:**
-
-    ```bash
-    ./evo --input test_input.txt --threads 4 --generations 1,2,#
-    ```
 
 **Project Structure:**
 
@@ -196,6 +180,6 @@ evo-crypter/
 │   │       └── fn_asterisk.c
 │   └── main.c
 └── License
-└── Makefile
+└── CMakeLists.txt
 └── README.md
 ```
