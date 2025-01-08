@@ -69,7 +69,7 @@ jobs:
       uses: johnwason/vcpkg-action@v6
       with:
         pkgs: pthreads
-        triplet: x64-windows
+        triplet: x64-windows-release
         token: ${{ secrets.GITHUB_TOKEN }}
         github-binarycache: true
 
@@ -80,7 +80,8 @@ jobs:
           -DCMAKE_CXX_COMPILER=${{ matrix.c_compiler }} `
           -DCMAKE_C_COMPILER=${{ matrix.c_compiler }} `
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} `
-          ${{ steps.vcpkg.outputs.vcpkg-cmake-config }} `
+          -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake `
+          -DVCPKG_TARGET_TRIPLET=x64-windows-release `
           -S ${{ github.workspace }}
 
     - name: Configure CMake (Not Windows)

@@ -15,11 +15,6 @@ file(GLOB_RECURSE SOURCES
     "src/*.c"
 )
 
-# Exclude specific files or patterns from compilation
-set(SOURCES ${SOURCES}
-    PARENT_SCOPE
-)
-
 # Add executable target
 add_executable(evo ${SOURCES})
 
