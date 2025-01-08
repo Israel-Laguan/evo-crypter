@@ -67,10 +67,18 @@ jobs:
       if: runner.os == 'Windows'
       shell: pwsh
       run: |
-        $pthreads4w_version = "3.0.0"
-        $pthreads4w_url = "https://github.com/win-pthread/win-pthread/archive/refs/tags/v${pthreads4w_version}.zip"
+        $pthreads4w_repo = "GerHobbelt/pthread-win32"
         $pthreads4w_extract_dir = "${{ runner.temp }}/pthreads4w"
         $pthreads4w_install_dir = "C:/pthreads4w"
+
+        # Get the latest release tag from GitHub API
+        $latest_release_url = "https://api.github.com/repos/${pthreads4w_repo}/releases/latest"
+        $release_info = Invoke-RestMethod -Uri $latest_release_url
+        $latest_tag = $release_info.tag_name
+        Write-Host "Latest pthreads4w release tag: ${latest_tag}"
+
+        # Construct the download URL for the latest release
+        $pthreads4w_url = "https://github.com/${pthreads4w_repo}/releases/download/${latest_tag}/pthread-win32-${latest_tag}.zip"
         $pthreads4w_zip_file = "${{ runner.temp }}/pthreads4w.zip"
 
         # Download pthreads4w and check for success
@@ -80,14 +88,6 @@ jobs:
           Write-Error "Failed to download pthreads4w. Status code: $($response.StatusCode)"
           exit 1
         }
-
-        # Verify downloaded file size (Optional) - Adjust expected size if needed
-        # $expected_size = 12345  # Replace with the expected file size in bytes
-        # $actual_size = (Get-Item $pthreads4w_zip_file).Length
-        # if ($actual_size -ne $expected_size) {
-        #   Write-Error "Downloaded file size does not match expected size. Got $($actual_size) bytes, expected $($expected_size) bytes."
-        #   exit 1
-        # }
 
         # Extract pthreads4w using Expand-Archive
         if (Test-Path -Path $pthreads4w_extract_dir) {
