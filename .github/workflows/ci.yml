@@ -77,6 +77,9 @@ jobs:
         Write-Host "Downloading pthreads4w from: ${pthreads4w_url}"
         Invoke-WebRequest -Uri "${pthreads4w_url}" -OutFile $pthreads4w_zip_file # Use -OutFile
 
+        # Print message indicating download completion
+        Write-Host "pthreads4w downloaded to: ${pthreads4w_zip_file}"
+
         # Extract pthreads4w using Expand-Archive
         if (Test-Path -Path $pthreads4w_extract_dir) {
           Remove-Item -Path $pthreads4w_extract_dir -Recurse -Force
@@ -86,6 +89,16 @@ jobs:
         # Find the actual include and lib directories
         $include_dir = Get-ChildItem -Path "$pthreads4w_extract_dir" -Directory -Recurse | Where-Object {$_.Name -eq "include"} | Select-Object -First 1 -ExpandProperty FullName
         $lib_dir = Get-ChildItem -Path "$pthreads4w_extract_dir" -Directory -Recurse | Where-Object {$_.Name -eq "lib"} | Select-Object -First 1 -ExpandProperty FullName
+
+        # Check if include and lib directories were found
+        if (-Not $include_dir) {
+          Write-Error "Could not find 'include' directory in extracted pthreads4w archive."
+          exit 1
+        }
+        if (-Not $lib_dir) {
+          Write-Error "Could not find 'lib' directory in extracted pthreads4w archive."
+          exit 1
+        }
 
         # Install pthreads4w to a system-wide location
         if (-Not (Test-Path -Path $pthreads4w_install_dir)) {
