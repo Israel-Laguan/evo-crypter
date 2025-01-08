@@ -15,7 +15,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, ubuntu-20.04, windows-2019, windows-2022, macos-latest]
         build_type: [Release]
-        c_compiler: [gcc, clang, cl]
+        c_compiler: [gcc, clang]
         include:
           - os: ubuntu-latest
             c_compiler: gcc
@@ -41,12 +41,6 @@ jobs:
             c_compiler: gcc
           - os: windows-2022
             c_compiler: clang
-          - os: ubuntu-latest
-            c_compiler: cl
-          - os: ubuntu-20.04
-            c_compiler: cl
-          - os: macos-latest
-            c_compiler: cl
 
     steps:
     - uses: actions/checkout@v4
@@ -63,99 +57,16 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y cppcheck
 
-    - name: Install pthreads4w (Windows)
+    - name: Setup vcpkg (Windows)
       if: runner.os == 'Windows'
-      shell: pwsh
+      uses: lukka/get-vcpkg@v1
+      with:
+        vcpkgCommitId: 'd5805d5c959f44d95754d1f24d9b93191d4b4581'
+
+    - name: Install pthreads using vcpkg (Windows)
+      if: runner.os == 'Windows'
       run: |
-        $pthreads4w_version = "version-3.1.0-release" # The specific tag
-        $pthreads4w_url = "https://github.com/GerHobbelt/pthread-win32/archive/refs/tags/${pthreads4w_version}.zip"
-        $pthreads4w_extract_dir = "${{ runner.temp }}/pthreads4w"
-        $pthreads4w_install_dir = "${{ github.workspace }}/pthreads4w"
-        $pthreads4w_zip_file = "${{ runner.temp }}/pthreads4w.zip" # Define zip file path
-
-        # Download pthreads4w
-        Write-Host "Downloading pthreads4w from: ${pthreads4w_url}"
-        try {
-          Invoke-WebRequest -Uri "${pthreads4w_url}" -OutFile $pthreads4w_zip_file -PassThru
-        }
-        catch {
-          Write-Error "Error downloading pthreads4w: $($_.Exception.Message)"
-          exit 1
-        }
-
-        # Print message indicating download completion
-        Write-Host "pthreads4w downloaded to: ${pthreads4w_zip_file}"
-
-        # Extract pthreads4w using Expand-Archive
-        if (Test-Path -Path $pthreads4w_extract_dir) {
-          Remove-Item -Path $pthreads4w_extract_dir -Recurse -Force
-        }
-        try {
-          Expand-Archive -Path $pthreads4w_zip_file -DestinationPath $pthreads4w_extract_dir -Force
-        }
-        catch {
-          Write-Error "Error extracting pthreads4w archive: $($_.Exception.Message)"
-          exit 1
-        }
-
-        # List contents of the extraction directory for debugging
-        Write-Host "Contents of extraction directory ($pthreads4w_extract_dir):"
-        Get-ChildItem -Path $pthreads4w_extract_dir -Recurse | Format-List
-
-        # Find the actual include and lib directories
-        $include_dir = Get-ChildItem -Path "$pthreads4w_extract_dir" -Directory -Recurse | Where-Object {$_.Name -eq "include"} | Select-Object -First 1 -ExpandProperty FullName
-        $lib_dir = Get-ChildItem -Path "$pthreads4w_extract_dir" -Directory -Recurse | Where-Object {$_.Name -eq "lib"} | Select-Object -First 1 -ExpandProperty FullName
-
-        # Check if include and lib directories were found
-        if (-Not $include_dir) {
-          Write-Error "Could not find 'include' directory in extracted pthreads4w archive."
-          exit 1
-        }
-        if (-Not $lib_dir) {
-          Write-Error "Could not find 'lib' directory in extracted pthreads4w archive."
-          exit 1
-        }
-
-        # Install pthreads4w to a system-wide location
-        if (-Not (Test-Path -Path $pthreads4w_install_dir)) {
-          mkdir $pthreads4w_install_dir
-        }
-
-        # Ensure destination directories exist and are not files
-        $include_dest_dir = "$pthreads4w_install_dir\include"
-        if (Test-Path -Path $include_dest_dir -PathType Leaf) {
-          Remove-Item -Path $include_dest_dir -Force
-        }
-        if (-Not (Test-Path -Path $include_dest_dir)) {
-          mkdir $include_dest_dir
-        }
-
-        $lib_dest_dir = "$pthreads4w_install_dir\lib"
-        if (Test-Path -Path $lib_dest_dir -PathType Leaf) {
-          Remove-Item -Path $lib_dest_dir -Force
-        }
-        if (-Not (Test-Path -Path $lib_dest_dir)) {
-          mkdir $lib_dest_dir
-        }
-
-        # Copy the files
-        try {
-          Copy-Item -Path "$include_dir\*" -Destination "$include_dest_dir" -Recurse
-        }
-        catch {
-          Write-Error "Error copying include files: $($_.Exception.Message)"
-          exit 1
-        }
-
-        try {
-          Copy-Item -Path "$lib_dir\*" -Destination "$lib_dest_dir" -Recurse
-        }
-        catch {
-          Write-Error "Error copying lib files: $($_.Exception.Message)"
-          exit 1
-        }
-
-        Write-Host "pthreads4w installed successfully to: ${pthreads4w_install_dir}"
+        vcpkg install pthreads:x64-windows
 
     - name: Configure CMake
       run: >
@@ -163,7 +74,7 @@ jobs:
         -DCMAKE_CXX_COMPILER=${{ matrix.c_compiler }}
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
-        -DCMAKE_PREFIX_PATH=${{ github.workspace }}/pthreads4w
+        -DCMAKE_TOOLCHAIN_FILE=D:/a/evo-crypter/evo-crypter/scripts/vcpkg/scripts/buildsystems/vcpkg.cmake
         -S ${{ github.workspace }}
 
     - name: Build
