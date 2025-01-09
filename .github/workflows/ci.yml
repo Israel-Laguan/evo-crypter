@@ -107,7 +107,7 @@ jobs:
         build_dir_msys="${workspace_msys}/${{ matrix.build_dir }}"
         echo "CMake Path: $(which cmake)"
         echo "PATH: ${build_dir_msys}"
-        cd "$build_dir_msys"
+        cd "$workspace_msys"
         mingw32-make.exe
 
     - name: Build (Not Windows)
