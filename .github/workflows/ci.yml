@@ -90,7 +90,7 @@ jobs:
         workspace_win="${{ steps.strings.outputs.workspace }}"
         workspace_msys=$(cygpath -m "$workspace_win") # Convert to MSYS path
         build_dir_msys="${workspace_msys}/${{ matrix.build_dir }}"
-        /mingw64/bin/cmake "$workspace_msys" -B "$build_dir_msys" -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} --debug-trycompile
+        MSYS2_PATH="/mingw64/bin:${PATH}" /mingw64/bin/cmake "$workspace_msys" -B "$build_dir_msys" -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} --debug-trycompile
 
     - name: Configure CMake (Not Windows)
       if: runner.os != 'Windows'
