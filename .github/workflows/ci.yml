@@ -56,6 +56,7 @@ jobs:
       shell: bash
       run: |
         echo "build-output-dir=${{ github.workspace }}/${{ matrix.build_dir }}" >> "$GITHUB_OUTPUT"
+        echo "workspace=${{ github.workspace }}" >> "$GITHUB_OUTPUT"
 
     - name: Install Dependencies (Linux)
       if: runner.os == 'Linux'
@@ -75,19 +76,21 @@ jobs:
       if: runner.os == 'Windows'
       shell: msys2 {0}
       run: |
-        if [ -d "${{ steps.strings.outputs.build-output-dir }}" ]; then
-          rm -rf ${{ steps.strings.outputs.build-output-dir }}
+        workspace_win="${{ steps.strings.outputs.workspace }}"
+        workspace_msys=$(cygpath -m "$workspace_win") # Convert to MSYS path
+        build_dir_msys="${workspace_msys}/${{ matrix.build_dir }}"
+        if [ -d "$build_dir_msys" ]; then
+          rm -rf "$build_dir_msys"
         fi
   
     - name: Configure CMake (Windows)
       if: runner.os == 'Windows'
       shell: msys2 {0}
       run: |
-        /mingw64/bin/cmake -B ${{ steps.strings.outputs.build-output-dir }} `
-          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} `
-          -G "Unix Makefiles" `
-          -S ${{ github.workspace }}
-          --debug-trycompile
+        workspace_win="${{ steps.strings.outputs.workspace }}"
+        workspace_msys=$(cygpath -m "$workspace_win") # Convert to MSYS path
+        build_dir_msys="${workspace_msys}/${{ matrix.build_dir }}"
+        /mingw64/bin/cmake "$workspace_msys" -B "$build_dir_msys" -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} --debug-trycompile
 
     - name: Configure CMake (Not Windows)
       if: runner.os != 'Windows'
@@ -98,14 +101,17 @@ jobs:
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         -S ${{ github.workspace }}
 
-    - name: Build
+    - name: Build (Windows)
       if: runner.os == 'Windows'
       shell: msys2 {0}
       run: |
-        cd ${{ steps.strings.outputs.build-output-dir }}
+        workspace_win="${{ steps.strings.outputs.workspace }}"
+        workspace_msys=$(cygpath -m "$workspace_win") # Convert to MSYS path
+        build_dir_msys="${workspace_msys}/${{ matrix.build_dir }}"
+        cd "$build_dir_msys"
         mingw32-make.exe
 
-    - name: Build
+    - name: Build (Not Windows)
       if: runner.os != 'Windows'
       run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
 
