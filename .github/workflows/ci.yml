@@ -102,8 +102,9 @@ jobs:
       if: runner.os == 'Windows'
       shell: msys2 {0}
       run: |
-        workspace_win="${{ steps.strings.outputs.build-output-dir }}"
-        build_dir_msys=$(cygpath -m "$workspace_win") # Convert to MSYS path
+        workspace_win="${{ steps.strings.outputs.workspace }}"
+        workspace_msys=$(cygpath -m "$workspace_win") # Convert to MSYS path
+        build_dir_msys="${workspace_msys}/${{ matrix.build_dir }}"
         echo "CMake Path: $(which cmake)"
         echo "PATH: ${build_dir_msys}"
         cd "$build_dir_msys"

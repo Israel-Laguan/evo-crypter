@@ -20,10 +20,8 @@ cmake --build .
 # Check if the build was successful
 if [ $? -eq 0 ]; then
     echo "Build successful. Executable: $BUILD_DIR/evo"
-    cd ..
     exit 0
 else
     echo "Build failed."
-    cd ..
     exit 1
 fi
