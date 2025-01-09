@@ -91,7 +91,7 @@ jobs:
         echo "Build Directory (MSYS): ${build_dir_msys}"
         echo "CMake Path: $(which cmake)"
         echo "PATH: ${PATH}"
-        MSYS2_PATH="/mingw64/bin:${PATH}" /mingw64/bin/cmake "$workspace_msys" -B "$build_dir_msys" -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_MAKE_PROGRAM=xmake --debug-trycompile
+        MSYS2_PATH="/mingw64/bin:${PATH}" /mingw64/bin/cmake "$workspace_msys" -B "$build_dir_msys" -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
 
     - name: Configure CMake (Not Windows)
       if: runner.os != 'Windows'
