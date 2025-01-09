@@ -30,7 +30,6 @@ jobs:
             c_compiler: gcc
           - os: ubuntu-20.04
             c_compiler: gcc
-            build_dir: build
           - os: windows-2019
             c_compiler: gcc
           - os: windows-2019
