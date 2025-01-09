@@ -28,8 +28,10 @@ jobs:
             c_compiler: clang
           - os: ubuntu-latest
             c_compiler: gcc
+            build_dir: build
           - os: ubuntu-20.04
             c_compiler: gcc
+            build_dir: build
           - os: windows-2019
             c_compiler: gcc
           - os: windows-2019
@@ -91,7 +93,7 @@ jobs:
         echo "Build Directory (MSYS): ${build_dir_msys}"
         echo "CMake Path: $(which cmake)"
         echo "PATH: ${PATH}"
-        MSYS2_PATH="/mingw64/bin:${PATH}" cmake "$workspace_msys" -B "$build_dir_msys" -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_MAKE_PROGRAM=make
+        MSYS2_PATH="/mingw64/bin:${PATH}" cmake "$workspace_msys" -B "$build_dir_msys" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
 
     - name: Configure CMake (Not Windows)
       if: runner.os != 'Windows'
@@ -109,6 +111,9 @@ jobs:
         workspace_win="${{ steps.strings.outputs.workspace }}"
         workspace_msys=$(cygpath -m "$workspace_win") # Convert to MSYS path
         build_dir_msys="${workspace_msys}/${{ matrix.build_dir }}"
+        echo "CMake Path: $(which cmake)"
+        echo "PATH: ${PATH}"
+        MSYS2_PATH="/mingw64/bin:${PATH}"
         cd "$build_dir_msys"
         mingw32-make.exe
 
