@@ -87,10 +87,6 @@ jobs:
         workspace_win="${{ steps.strings.outputs.workspace }}"
         workspace_msys=$(cygpath -m "$workspace_win") # Convert to MSYS path
         build_dir_msys="${workspace_msys}/${{ matrix.build_dir }}"
-        echo "Workspace (MSYS): ${workspace_msys}"
-        echo "Build Directory (MSYS): ${build_dir_msys}"
-        echo "CMake Path: $(which cmake)"
-        echo "PATH: ${PATH}"
         MSYS2_PATH="/mingw64/bin:${PATH}" cmake "$workspace_msys" -B "$build_dir_msys" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
 
     - name: Configure CMake (Not Windows)
@@ -106,13 +102,11 @@ jobs:
       if: runner.os == 'Windows'
       shell: msys2 {0}
       run: |
-        workspace_win="${{ steps.strings.outputs.workspace }}"
-        workspace_msys=$(cygpath -m "$workspace_win") # Convert to MSYS path
-        build_dir_msys="${workspace_msys}/${{ matrix.build_dir }}"
+        workspace_win="${{ steps.strings.outputs.build-output-dir }}"
+        build_dir_msys=$(cygpath -m "$workspace_win") # Convert to MSYS path
         echo "CMake Path: $(which cmake)"
-        echo "PATH: ${PATH}"
-        MSYS2_PATH="/mingw64/bin:${PATH}"
-        cd ${{ steps.strings.outputs.build-output-dir }}
+        echo "PATH: ${build_dir_msys}"
+        cd "$build_dir_msys"
         mingw32-make.exe
 
     - name: Build (Not Windows)
