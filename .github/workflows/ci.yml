@@ -112,7 +112,7 @@ jobs:
         echo "CMake Path: $(which cmake)"
         echo "PATH: ${PATH}"
         MSYS2_PATH="/mingw64/bin:${PATH}"
-        cd "$build_dir_msys"
+        cd ${{ steps.strings.outputs.build-output-dir }}
         mingw32-make.exe
 
     - name: Build (Not Windows)
