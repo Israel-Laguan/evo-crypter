@@ -28,7 +28,6 @@ jobs:
             c_compiler: clang
           - os: ubuntu-latest
             c_compiler: gcc
-            build_dir: build
           - os: ubuntu-20.04
             c_compiler: gcc
             build_dir: build
