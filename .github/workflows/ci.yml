@@ -102,13 +102,10 @@ jobs:
       if: runner.os == 'Windows'
       shell: msys2 {0}
       run: |
-        workspace_win="${{ steps.strings.outputs.workspace }}"
-        workspace_msys=$(cygpath -m "$workspace_win") # Convert to MSYS path
-        build_dir_msys="${workspace_msys}/${{ matrix.build_dir }}"
-        echo "CMake Path: $(which cmake)"
+        build_dir_win="${{ steps.strings.outputs.build-output-dir }}"
+        build_dir_msys=$(cygpath -m "$build_dir_win") # Convert to MSYS path
         echo "PATH: ${build_dir_msys}"
-        cd "$workspace_msys"
-        mingw32-make.exe
+        cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
 
     - name: Build (Not Windows)
       if: runner.os != 'Windows'
