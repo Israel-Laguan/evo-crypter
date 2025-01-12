@@ -105,7 +105,7 @@ jobs:
         build_dir_win="${{ steps.strings.outputs.build-output-dir }}"
         build_dir_msys=$(cygpath -m "$build_dir_win") # Convert to MSYS path
         echo "PATH: ${build_dir_msys}"
-        cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
+        cmake --build "$build_dir_msys" --config ${{ matrix.build_type }}
 
     - name: Build (Not Windows)
       if: runner.os != 'Windows'
