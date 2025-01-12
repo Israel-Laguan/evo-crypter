@@ -9,14 +9,6 @@
 
 #define BUFFER_SIZE 1024
 
-// Structure to hold arguments for the chunk processing function
-typedef struct
-{
-    char *buffer;
-    const char *generations;
-    bool decrypt;
-} ChunkProcessingArgs;
-
 // Function to prepare a chunk for processing (handles memory allocation and error handling)
 static char *prepare_chunk(const char *buffer)
 {
@@ -76,10 +68,12 @@ void process_input_single_thread(const char *input_file, const char *output_file
 
     if (!decrypt && ftell(output) > 0)
     {
+        fflush(output); // Flush the output buffer before seeking
         fseek(output, -1, SEEK_END);
         char last_char = fgetc(output);
         if (last_char != '\n')
         {
+            fflush(output);
             fputc('\n', output);
         }
     }
@@ -175,6 +169,7 @@ void process_input_multi_thread(const char *input_file, const char *output_file,
         size_t len = strlen(buffers[i - 1]);
         if (len > 0 && buffers[i - 1][len - 1] != '\n')
         {
+            fflush(output);
             fputc('\n', output);
         }
     }

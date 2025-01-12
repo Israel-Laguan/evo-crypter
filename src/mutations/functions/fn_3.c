@@ -1,5 +1,5 @@
 #include <ctype.h>
-#include "../mutation_functions.h"
+#include "../mod.h"
 
 void fn_3_up(char *str) {
     for (int i = 0; str[i] != '\0'; i++) {

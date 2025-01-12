@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "config/mod.h"
-#include "config/utils.h"
 #include "file/mod.h"
 #include "mutations/mod.h"
+#include "config/utils.h"
 
 int main(int argc, char *argv[])
 {

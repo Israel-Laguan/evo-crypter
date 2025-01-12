@@ -15,29 +15,6 @@ void reverse_generations(char *generations)
     }
 }
 
-char *read_file(const char *filename) {
-    FILE *file = fopen(filename, "r");
-    if (file == NULL) {
-        return NULL;
-    }
-
-    fseek(file, 0, SEEK_END);
-    long file_size = ftell(file);
-    rewind(file);
-
-    char *file_content = (char *)malloc(file_size + 1);
-    if (file_content == NULL) {
-        fclose(file);
-        return NULL;
-    }
-
-    size_t bytes_read = fread(file_content, 1, file_size, file);
-    file_content[bytes_read] = '\0';
-
-    fclose(file);
-    return file_content;
-}
-
 bool file_exists(const char *filename) {
     FILE *file = fopen(filename, "r");
     if (file) {

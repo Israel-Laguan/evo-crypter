@@ -1,0 +1,183 @@
+name: evo-crypter CI
+
+on:
+  push:
+    branches: [ "main", "dev" ]
+  pull_request:
+    branches: [ "main", "dev", "**" ]
+
+jobs:
+  build-test-lint-debian:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set reusable strings
+        id: strings
+        shell: bash
+        run: |
+          echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
+
+      - name: Install Dependencies (Linux)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cppcheck
+
+      - name: Configure CMake
+        run: >
+          cmake -B ${{ steps.strings.outputs.build-output-dir }}
+          -DCMAKE_CXX_COMPILER=g++
+          -DCMAKE_C_COMPILER=gcc
+          -DCMAKE_BUILD_TYPE=Release
+          -S ${{ github.workspace }}
+
+      - name: Build
+        run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config Release
+
+      - name: Test
+        working-directory: ${{ steps.strings.outputs.build-output-dir }}
+        run: ctest --build-config Release
+
+      - name: Lint
+        run: ./scripts/lint.sh
+
+  build-matrix:
+    needs: build-test-lint-debian # The matrix will run only if build-test-lint-debian succeeds
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev'
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, ubuntu-20.04, windows-2019, windows-2022, macos-latest]
+        build_type: [Release]
+        c_compiler: [gcc, clang, cl]
+        include:
+          - os: macos-latest
+            c_compiler: clang
+            build_dir: build
+          - os: ubuntu-latest
+            c_compiler: gcc
+            build_dir: build
+          - os: ubuntu-20.04
+            c_compiler: gcc
+            build_dir: build
+          - os: windows-2019
+            c_compiler: cl
+            build_dir: build
+          - os: windows-2022
+            c_compiler: cl
+            build_dir: build
+        exclude:
+          - os: windows-2019
+            c_compiler: gcc
+          - os: windows-2019
+            c_compiler: clang
+          - os: windows-2022
+            c_compiler: gcc
+          - os: windows-2022
+            c_compiler: clang
+          - os: ubuntu-latest
+            c_compiler: cl
+          - os: ubuntu-20.04
+            c_compiler: cl
+          - os: macos-latest
+            c_compiler: cl
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set reusable strings
+      id: strings
+      shell: bash
+      run: |
+        echo "build-output-dir=${{ github.workspace }}/${{ matrix.build_dir }}" >> "$GITHUB_OUTPUT"
+        echo "workspace=${{ github.workspace }}" >> "$GITHUB_OUTPUT"
+
+    - name: Install Dependencies (Linux)
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y cppcheck
+
+    - name: Setup MSYS2 (Windows)
+      if: runner.os == 'Windows'
+      uses: msys2/setup-msys2@v2
+      with:
+        msystem: MINGW64 # Use MINGW64 for 64-bit builds
+        install: mingw-w64-x86_64-toolchain mingw-w64-x86_64-winpthreads-git mingw-w64-x86_64-cmake mingw-w64-x86_64-make
+        update: true
+
+    - name: Clean Build Directory (Windows)
+      if: runner.os == 'Windows'
+      shell: msys2 {0}
+      run: |
+        workspace_win="${{ steps.strings.outputs.workspace }}"
+        workspace_msys=$(cygpath -m "$workspace_win") # Convert to MSYS path
+        build_dir_msys="${workspace_msys}/${{ matrix.build_dir }}"
+        if [ -d "$build_dir_msys" ]; then
+          rm -rf "$build_dir_msys"
+        fi
+
+    - name: Configure CMake (Windows)
+      if: runner.os == 'Windows'
+      shell: msys2 {0}
+      run: |
+        workspace_win="${{ steps.strings.outputs.workspace }}"
+        workspace_msys=$(cygpath -m "$workspace_win") # Convert to MSYS path
+        build_dir_msys="${workspace_msys}/${{ matrix.build_dir }}"
+        MSYS2_PATH="/mingw64/bin:${PATH}" cmake "$workspace_msys" -B "$build_dir_msys" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+
+    - name: Configure CMake (Not Windows)
+      if: runner.os != 'Windows'
+      run: >
+        cmake -B ${{ steps.strings.outputs.build-output-dir }}
+        -DCMAKE_CXX_COMPILER=${{ matrix.c_compiler }}
+        -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
+        -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+        -S ${{ github.workspace }}
+
+    - name: Build (Windows)
+      if: runner.os == 'Windows'
+      shell: msys2 {0}
+      run: |
+        build_dir_win="${{ steps.strings.outputs.build-output-dir }}"
+        build_dir_msys=$(cygpath -m "$build_dir_win") # Convert to MSYS path
+        cmake --build "$build_dir_msys" --config ${{ matrix.build_type }}
+
+    - name: Build (Not Windows)
+      if: runner.os != 'Windows'
+      run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
+
+    - name: Test
+      working-directory: ${{ steps.strings.outputs.build-output-dir }}
+      run: ctest --build-config ${{ matrix.build_type }}
+
+  codeql-analysis:
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev'
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'cpp' ]
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v3
+      with:
+        languages: ${{ matrix.language }}
+
+    - name: Autobuild
+      uses: github/codeql-action/autobuild@v3
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v3
+      with:
+        category: "/language:${{matrix.language}}"

@@ -2,18 +2,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include "mod.h"
-#include "functions/fn_1.c"
-#include "functions/fn_2.c"
-#include "functions/fn_3.c"
-#include "functions/fn_4.c"
-#include "functions/fn_5.c"
-#include "functions/fn_6.c"
-#include "functions/fn_7.c"
-#include "functions/fn_8.c"
-#include "functions/fn_9.c"
-#include "functions/fn_ampersand.c"
-#include "functions/fn_asterisk.c"
 #include "../file/utils.h"
+#include "../file/input_processing.h"
 
 void apply_mutation_up(char symbol, char *str) {
     switch (symbol) {
@@ -124,7 +114,7 @@ void *apply_mutations_to_chunk(void *arg, const char *generations, bool decrypt)
     char *token = strtok(generations_copy, ",");
     while (token != NULL)
     {
-        for (int j = 0; j < strlen(token); j++)
+        for (size_t j = 0; j < strlen(token); j++)
         {
             char symbol = token[j];
             if (decrypt)
