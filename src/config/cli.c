@@ -29,11 +29,27 @@ void handle_generations_flag(Config *config, char *value) {
     }
 }
 
+/**
+ * @brief Handles the decrypt flag in command line arguments
+ * 
+ * @param config Pointer to the configuration structure to be updated
+ * @param value Unused parameter (required for handler function signature)
+ * 
+ * @note This is a boolean flag that doesn't require a value
+ */
 void handle_decrypt_flag(Config *config, char *value) {
     (void)value;
     config->decrypt = true;
 }
 
+/**
+ * @brief Handles the help flag in command line arguments
+ * 
+ * @param config Pointer to the configuration structure to be updated
+ * @param value Unused parameter (required for handler function signature)
+ * 
+ * @note This is a boolean flag that doesn't require a value
+ */
 void handle_help_flag(Config *config, char *value) {
     (void)value;
     config->help = true;

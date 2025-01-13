@@ -3,17 +3,16 @@
 
 #include <stdbool.h>
 
-typedef struct
-{
-    char *input_file;
-    char *generations;
-    int threads;
-    bool decrypt;
-    bool error;
-    bool help;
+typedef struct {
+  char* input_file;
+  char* generations;
+  int threads;
+  bool decrypt;
+  bool error;
+  bool help;
 } Config;
 
-Config initialize_config(int argc, char *argv[]);
-void free_config(Config *config);
+Config initialize_config(int argc, char* argv[]);
+void free_config(Config* config);
 
 #endif // EVO_CONFIG_MOD_H
