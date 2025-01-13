@@ -65,6 +65,14 @@ The algorithm can be described as an iterative, function composition-based encry
 | 10.0.0  | Elder        | - Long-term support and maintenance. <br> - Update dependencies. <br> - Address bug fixes and minor improvements.                                                                                                                                    |
 | 11.0.0  | Ancient      | - Long-term support and maintenance. <br> - Update dependencies. <br> - Address bug fixes and minor improvements.                                                                                                                                    |
 
+## Getting Started
+
+### Prerequisites
+
+*   **CMake** (version 3.10 or higher)
+*   **A C compiler** (e.g., GCC, Clang, MSVC)
+*   **Make** (or a compatible build tool, like Ninja)
+
 ## Setup
 
 1. Clone the repository:
@@ -115,6 +123,8 @@ Example:
 
 *   `build.sh`: Builds the executable.
 *   `migrate.sh`: Migrates the old code to the new structure.
+*   `lint.sh`: Runs the cppcheck linter for static code analysis.
+*   `update_version.sh`: Updates the project version (using SemVer) and optionally creates a Git tag.
 *   `evolution_rate.sh`: to be implemented in the future.
 *   `epoch_integration.sh`: to be implemented in the future.
 *   `lineage_verification.sh`: to be implemented in the future.
@@ -124,16 +134,31 @@ Example:
 ```bash
 ./scripts/build.sh
 ./scripts/migrate.sh
+./scripts/lint.sh
+./scripts/update_version.sh 0.2.0
 ```
 
 ## Contributing
 
-See `docs/MUTATIONS.md` for instructions on adding new functions and contributing to the project.
+We welcome contributions to `evo-crypter`! If you'd like to contribute, please follow these steps:
 
-**Important Note for Developers:**
+1. Fork the repository.
+2. Create a new branch for your feature or bug fix: `git checkout -b feature/your-feature` or `git checkout -b fix/your-bug-fix`.
+3. Make your changes.
+4. Write tests for your changes (if applicable).
+5. Ensure your code passes the linter: `./scripts/lint.sh`
+6. Ensure to run `find . -iname '*.h' -o -iname '*.cpp' | xargs clang-format -i` to ensure format is correct.
+7. Commit your changes with clear commit messages: `git commit -m "Add your commit message here"`
+8. Push your branch to your fork: `git push origin feature/your-feature`
+9. Create a pull request to the `dev` branch of the main repository.
 
-*   The `src/mutations/mod.c` file is where you implement your encryption/decryption logic.
-*   **Do not** commit sensitive encryption functions or keys to a public repository.
+Please see `docs/MUTATIONS.md` for instructions on adding new mutation functions.
+
+For more detailed information on contributing, coding style, etc. please see the docs folder
+
+## License
+
+`evo-crypter` is licensed under the MIT License. See the `LICENSE` file for more details.
 
 **Project Structure:**
 
