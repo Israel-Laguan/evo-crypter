@@ -9,7 +9,15 @@
 
 #define BUFFER_SIZE 1024
 
-// Function to prepare a chunk for processing (handles memory allocation and error handling)
+/**
+ * @brief Prepares a chunk of data for processing.
+ *
+ * This function allocates memory for a new buffer and copies the input buffer
+ * into it. It handles potential memory allocation errors.
+ *
+ * @param buffer The input buffer containing the chunk of data.
+ * @return A pointer to the newly allocated buffer, or NULL if allocation fails.
+ */
 static char *prepare_chunk(const char *buffer)
 {
     char *prepared_buffer = strdup(buffer);
@@ -21,7 +29,22 @@ static char *prepare_chunk(const char *buffer)
     return prepared_buffer;
 }
 
-// Function to process a single chunk
+/**
+ * @brief Processes a single chunk of data by applying mutations.
+ *
+ * This function is designed to be used either directly (in single-threaded
+ * mode) or as a thread function (in multi-threaded mode). It applies the
+ * sequence of mutations defined in the `generations` string to the input
+ * `buffer`.
+ *
+ * @param arg A pointer to a `ChunkProcessingArgs` struct containing:
+ *            - buffer: The chunk of data to process.
+ *            - generations: The sequence of mutations to apply.
+ *            - decrypt: A flag indicating whether to decrypt or encrypt.
+ * @return Always returns NULL. This is only a placeholder to satisfy the
+ *         requirements of `pthread_create`, where the function must return
+ * `void *`.
+ */
 static void *process_chunk(void *arg)
 {
     ChunkProcessingArgs *args = (ChunkProcessingArgs *)arg;

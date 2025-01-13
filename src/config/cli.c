@@ -4,7 +4,12 @@
 #include "mod.h"
 #include "cli.h"
 
-// Handler functions for each flag
+/**
+ * @brief Handles the input file flag (-i or --input).
+ *
+ * @param config The Config struct to update.
+ * @param value The value associated with the flag (input file path).
+ */
 void handle_input_flag(Config *config, char *value) {
     config->input_file = strdup(value);
     if (config->input_file == NULL) {
@@ -13,6 +18,12 @@ void handle_input_flag(Config *config, char *value) {
     }
 }
 
+/**
+ * @brief Handles the threads flag (-t or --threads).
+ *
+ * @param config The Config struct to update.
+ * @param value The value associated with the flag (number of threads).
+ */
 void handle_threads_flag(Config *config, char *value) {
     config->threads = atoi(value);
     if (config->threads <= 0) {
@@ -21,6 +32,12 @@ void handle_threads_flag(Config *config, char *value) {
     }
 }
 
+/**
+ * @brief Handles the generations flag (-g or --generations).
+ *
+ * @param config The Config struct to update.
+ * @param value The value associated with the flag (generations string).
+ */
 void handle_generations_flag(Config *config, char *value) {
     config->generations = strdup(value);
     if (config->generations == NULL) {
@@ -30,12 +47,10 @@ void handle_generations_flag(Config *config, char *value) {
 }
 
 /**
- * @brief Handles the decrypt flag in command line arguments
- * 
- * @param config Pointer to the configuration structure to be updated
- * @param value Unused parameter (required for handler function signature)
- * 
- * @note This is a boolean flag that doesn't require a value
+ * @brief Handles the decrypt flag (-d or --decrypt).
+ *
+ * @param config The Config struct to update.
+ * @param value The value associated with the flag (NULL in this case).
  */
 void handle_decrypt_flag(Config *config, char *value) {
     (void)value;
@@ -43,12 +58,10 @@ void handle_decrypt_flag(Config *config, char *value) {
 }
 
 /**
- * @brief Handles the help flag in command line arguments
- * 
- * @param config Pointer to the configuration structure to be updated
- * @param value Unused parameter (required for handler function signature)
- * 
- * @note This is a boolean flag that doesn't require a value
+ * @brief Handles the help flag (-h or --help).
+ *
+ * @param config The Config struct to update.
+ * @param value The value associated with the flag (NULL in this case).
  */
 void handle_help_flag(Config *config, char *value) {
     (void)value;
@@ -62,6 +75,9 @@ typedef struct {
     void (*handler)(Config *config, char *value);
 } FlagHandler;
 
+/**
+ * @brief Array of FlagHandler structs, mapping flag names to handler functions.
+ */
 FlagHandler flag_handlers[] = {
     {"-i", "--input", handle_input_flag},
     {"-t", "--threads", handle_threads_flag},
@@ -84,7 +100,7 @@ Config parse_command_line_args(int argc, char *argv[]) {
                 char *value = NULL;
 
                 // Expect a value unless it's a boolean flag (like -d or -h)
-                if (flag_handlers[j].handler != handle_decrypt_flag && 
+                if (flag_handlers[j].handler != handle_decrypt_flag &&
                     flag_handlers[j].handler != handle_help_flag) {
                     if (i + 1 < argc && argv[i + 1][0] != '-') {
                         value = argv[++i];
