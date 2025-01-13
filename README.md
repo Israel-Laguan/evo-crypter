@@ -71,7 +71,7 @@ The algorithm can be described as an iterative, function composition-based encry
 
 *   **CMake** (version 3.10 or higher)
 *   **A C compiler** (e.g., GCC, Clang, MSVC)
-*   **Make** (or a compatible build tool, like Ninja)   
+*   **Make** (or a compatible build tool, like Ninja)
 
 ## Setup
 
@@ -147,9 +147,10 @@ We welcome contributions to `evo-crypter`! If you'd like to contribute, please f
 3. Make your changes.
 4. Write tests for your changes (if applicable).
 5. Ensure your code passes the linter: `./scripts/lint.sh`
-6. Commit your changes with clear commit messages: `git commit -m "Add your commit message here"`
-7. Push your branch to your fork: `git push origin feature/your-feature`
-8. Create a pull request to the `dev` branch of the main repository.
+6. Ensure to run `find . -iname '*.h' -o -iname '*.cpp' | xargs clang-format -i` to ensure format is correct.
+7. Commit your changes with clear commit messages: `git commit -m "Add your commit message here"`
+8. Push your branch to your fork: `git push origin feature/your-feature`
+9. Create a pull request to the `dev` branch of the main repository.
 
 Please see `docs/MUTATIONS.md` for instructions on adding new mutation functions.
 
