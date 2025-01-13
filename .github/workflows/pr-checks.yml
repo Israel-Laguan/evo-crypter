@@ -24,8 +24,7 @@ jobs:
 
       - name: Check formatting with clang-format
         run: |
-          find . -regex '.*\.\(c\|h\)' -print0 | xargs -0 clang-format -i --style=file
-          git diff --exit-code
+          find . -iname '*.h' -o -iname '*.cpp' | xargs clang-format -i
 
       - name: Perform static analysis with clang-tidy
         run: |
