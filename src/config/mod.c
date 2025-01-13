@@ -8,15 +8,18 @@
 
 Config initialize_config(int argc, char *argv[]) {
     Config config = parse_command_line_args(argc, argv);
+    char error_buffer[1024];
 
     if (config.error || config.help) {
         return config;
     }
 
     if (config.input_file == NULL) {
-        fprintf(stderr, "Error: --input argument is required.\n");
-        config.error = true;
-        return config;
+      snprintf(error_buffer, sizeof(error_buffer),
+	       "Error: --input argument is required.\n");
+      fprintf(stderr, "%s", error_buffer);
+      config.error = true;
+      return config;
     }
 
     if (config.generations == NULL) {
@@ -35,9 +38,12 @@ Config initialize_config(int argc, char *argv[]) {
         }
     }
     if (!is_valid_generations(config.generations)) {
-        fprintf(stderr, "Error: Invalid characters in --generations. Allowed: 0-9, a-z, #, *\n");
-        config.error = true;
-        return config;
+      snprintf(error_buffer, sizeof(error_buffer),
+	       "Error: Invalid characters in --generations. Allowed: 0-9, a-z, "
+	       "#, *\n");
+      fprintf(stderr, "%s", error_buffer);
+      config.error = true;
+      return config;
     }
 
     return config;

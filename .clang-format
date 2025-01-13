@@ -1,0 +1,11 @@
+BasedOnStyle: LLVM
+IndentWidth: 2
+UseTab: Always
+BreakBeforeBraces: Attach
+ColumnLimit: 80
+AccessModifierOffset: -2
+AlignAfterOpenBracket: Align
+AlignOperands:   true
+AllowShortFunctionsOnASingleLine: All
+AlwaysBreakTemplateDeclarations: Yes
+PointerAlignment: Left

@@ -1,0 +1,21 @@
+# EditorConfig is awesome: https://EditorConfig.org
+
+# top-most EditorConfig file
+root = true
+
+# Unix-style newlines with a newline ending every file
+[*]
+end_of_line = lf
+insert_final_newline = true
+charset = utf-8
+trim_trailing_whitespace = true
+
+# Matches multiple files with brace expansion notation
+# Set default indentation options
+[*.{c,h,cc,hh}]
+indent_style = tab
+indent_size = 2
+
+# Make sure Doxygen comments are indented properly
+[*.{c,h,cc,hh}/**]
+indent_size = 2
