@@ -10,7 +10,23 @@ project(evo-crypter VERSION ${PROJECT_VERSION})
 find_package(Threads REQUIRED)
 
 # Find cmocka
-find_package(cmocka REQUIRED)
+find_package(cmocka)
+
+if(NOT cmocka_FOUND)
+    message(WARNING "cmocka not found. Trying to install it...")
+
+    execute_process(
+        COMMAND sudo apt-get update
+        COMMAND sudo apt-get install -y libcmocka-dev
+        RESULT_VARIABLE INSTALL_RESULT
+    )
+
+    if(NOT INSTALL_RESULT EQUAL 0)
+        message(FATAL_ERROR "Failed to install cmocka. Please install it manually.")
+    endif()
+
+    find_package(cmocka REQUIRED)
+endif()
 
 # Collect source files (excluding unit test files and main.c)
 file(GLOB_RECURSE SOURCES

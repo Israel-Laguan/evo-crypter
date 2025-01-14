@@ -24,7 +24,7 @@ jobs:
 
       - name: Check formatting with clang-format
         run: |
-          find . -iname '*.h' -o -iname '*.cpp' | xargs clang-format -i
+          find . -iname '*.h' -o -iname '*.c' | xargs clang-format -i
 
       - name: Perform static analysis with clang-tidy
         run: |
@@ -47,6 +47,11 @@ jobs:
         run: |
           echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
 
+      - name: Install cmocka
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libcmocka-dev
+
       - name: Configure CMake
         run: >
           cmake -B ${{ steps.strings.outputs.build-output-dir }}
@@ -61,7 +66,6 @@ jobs:
       - name: Test
         working-directory: ${{ steps.strings.outputs.build-output-dir }}
         run: ctest --build-config Release
-
 
   codeql-analysis:
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev'
