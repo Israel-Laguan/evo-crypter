@@ -66,9 +66,8 @@ jobs:
         cmake: true
         ccache: true
         ninja: false
-        vs: true # only need to add Visual Studio when using cl.exe
-        msvc: latest
-        vcpkg-rev: master # to use the latest version of vcpkg
+        visualstudio: true # only need to add Visual Studio when using cl.exe
+        msvc: true
 
     - name: Cache vcpkg and build
       if: runner.os == 'Windows'
