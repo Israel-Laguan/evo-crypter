@@ -92,7 +92,6 @@ FlagHandler flag_handlers[] = {
 
 Config parse_command_line_args(int argc, char* argv[]) {
   Config config = {NULL, NULL, 1, false, false, false};
-  char error_buffer[1024];
 
   for (int i = 1; i < argc; i++) {
     bool flag_found = false;
@@ -109,6 +108,8 @@ Config parse_command_line_args(int argc, char* argv[]) {
 	  if (i + 1 < argc && argv[i + 1][0] != '-') {
 	    value = argv[++i];
 	  } else {
+	    // Reduce the scope of error_buffer
+	    char error_buffer[1024];
 	    snprintf(error_buffer, sizeof(error_buffer),
 		     "Error: Missing value for %s\n", argv[i]);
 	    fprintf(stderr, "%s", error_buffer);
@@ -122,6 +123,8 @@ Config parse_command_line_args(int argc, char* argv[]) {
       }
     }
     if (!flag_found) {
+      // Reduce the scope of error_buffer
+      char error_buffer[1024];
       snprintf(error_buffer, sizeof(error_buffer),
 	       "Error: Unknown argument: %s\n", argv[i]);
       fprintf(stderr, "%s", error_buffer);

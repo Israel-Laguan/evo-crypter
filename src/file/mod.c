@@ -10,8 +10,9 @@
 
 void evolve_file(const char* input_file, const char* output_file,
 		 const char* generations, int threads, bool decrypt) {
-  char error_buffer[1024];
   if (!file_exists(input_file)) {
+    // Reduce the scope of error_buffer
+    char error_buffer[1024];
     snprintf(error_buffer, sizeof(error_buffer),
 	     "Error: Input file does not exist: %s\n", input_file);
     fprintf(stderr, "%s", error_buffer);

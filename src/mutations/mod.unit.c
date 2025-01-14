@@ -31,8 +31,9 @@ MutationFunc mutation_functions[] = {
 // Test case for apply_mutation_up and apply_mutation_down using a loop
 
 static void test_apply_mutations_up_and_down(void** state) {
-  char test_str[] = "test_string";
-  char original_str[] = "test_string"; // Keep a copy for comparison
+  char test_str[1024] =
+      "test_string"; // Increase size to avoid potential overflow
+  char original_str[1024] = "test_string"; // Keep a copy for comparison
 
   // Iterate over all mutation functions
   for (int i = 0;
@@ -46,13 +47,14 @@ static void test_apply_mutations_up_and_down(void** state) {
     assert_string_equal(original_str, test_str);
 
     // Reset test_str for the next test
-    strcpy(test_str, original_str);
+    strncpy(test_str, original_str, sizeof(test_str)); // Use strncpy
+    test_str[sizeof(test_str) - 1] = '\0'; // Ensure null-termination
   }
 }
 
 static void test_apply_mutations_down_and_up(void** state) {
-  char test_str[] = "test_string";
-  char original_str[] = "test_string"; // Keep a copy for comparison
+  char test_str[1024] = "test_string";	   // Increase size
+  char original_str[1024] = "test_string"; // Keep a copy for comparison
 
   // Iterate over all mutation functions
   for (int i = 0;
@@ -67,7 +69,8 @@ static void test_apply_mutations_down_and_up(void** state) {
     assert_string_equal(original_str, test_str);
 
     // Reset test_str for the next test
-    strcpy(test_str, original_str);
+    strncpy(test_str, original_str, sizeof(test_str)); // Use strncpy
+    test_str[sizeof(test_str) - 1] = '\0'; // Ensure null-termination
   }
 }
 

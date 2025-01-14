@@ -116,19 +116,32 @@ void process_input_multi_thread(const char* input_file, const char* output_file,
   ChunkProcessingArgs* thread_args =
       malloc(threads * sizeof(ChunkProcessingArgs));
 
+  // Handle the case where threads == 0 separately
+  if (threads <= 0) {
+    fprintf(stderr, "Error: Number of threads must be greater than 0.\n");
+    free(thread_ids);
+    free(thread_args);
+    fclose(input);
+    fclose(output);
+    exit(EXIT_FAILURE);
+  }
+
   char** buffers = malloc(threads * sizeof(char*));
   for (int i = 0; i < threads; i++) {
     buffers[i] = malloc(BUFFER_SIZE);
-    if (buffers[i] == NULL) { // Check if malloc was successful
-      // Handle error, free previously allocated memory
+    if (buffers[i] == NULL) {
+      perror("Failed to allocate memory for buffers");
       for (int j = 0; j < i; j++) {
 	free(buffers[j]);
       }
       free(buffers);
-      perror("Failed to allocate memory for buffers");
+      free(thread_ids);
+      free(thread_args);
+      fclose(input);
+      fclose(output);
       exit(EXIT_FAILURE);
     }
-    buffers[i][0] = '\0'; // Initialize the buffer
+    memset(buffers[i], 0, BUFFER_SIZE);
   }
 
   int i = 0;
@@ -145,10 +158,8 @@ void process_input_multi_thread(const char* input_file, const char* output_file,
       }
     }
 
-    // Prepare the chunk (allocate memory)
     thread_args[i].buffer = prepare_chunk(buffers[i]);
     if (!thread_args[i].buffer) {
-      // Clean up allocated resources before exiting
       for (int j = 0; j < i; j++) {
 	free(thread_args[j].buffer);
       }
@@ -160,7 +171,7 @@ void process_input_multi_thread(const char* input_file, const char* output_file,
       free(thread_args);
       fclose(input);
       fclose(output);
-      exit(EXIT_FAILURE); // Exit on allocation failure
+      exit(EXIT_FAILURE);
     }
     thread_args[i].generations = generations;
     thread_args[i].decrypt = decrypt;
