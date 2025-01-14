@@ -17,12 +17,17 @@ void print_usage(const char* program_name) {
 }
 
 bool is_valid_generations(const char* generations) {
+  if (generations == NULL || *generations == '\0') {
+    return false; // Handle NULL or empty string
+  }
+  bool has_valid_char = false;
   for (int i = 0; generations[i] != '\0'; i++) {
     char c = generations[i];
-    if (!(isdigit(c) || (c >= 'a' && c <= 'z') || (c == '#') || (c == '*') ||
-	  (c == ','))) {
+    if (isdigit(c) || (c >= 'a' && c <= 'z') || (c == '#') || (c == '*')) {
+      has_valid_char = true;
+    } else if (c != ',') {
       return false; // Invalid character found
     }
   }
-  return true; // All characters are valid
+  return has_valid_char; // Must have at least one valid character
 }

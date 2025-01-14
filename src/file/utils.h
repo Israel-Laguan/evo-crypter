@@ -6,6 +6,7 @@
 #ifndef EVO_FILE_UTILS_H
 #define EVO_FILE_UTILS_H
 
+#include <setjmp.h>
 #include <stdbool.h>
 #include <stdio.h>
 
