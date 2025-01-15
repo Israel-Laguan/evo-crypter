@@ -23,6 +23,17 @@ if(NOT cmocka_FOUND)
 
     if(NOT INSTALL_RESULT EQUAL 0)
         message(FATAL_ERROR "Failed to install cmocka. Please install it manually.")
+
+				# Try to install using brew (macOS)
+        execute_process(
+            COMMAND brew update
+            COMMAND brew install cmocka
+            RESULT_VARIABLE BREW_INSTALL_RESULT
+        )
+
+        if(NOT BREW_INSTALL_RESULT EQUAL 0)
+            message(FATAL_ERROR "Failed to install cmocka. Please install it manually.")
+        endif()
     endif()
 
     find_package(cmocka REQUIRED)
