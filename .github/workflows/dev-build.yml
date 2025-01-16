@@ -12,8 +12,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
 
       - name: Install Dependencies
         run: |
@@ -22,12 +20,6 @@ jobs:
 
       - name: Build project (Release)
         run: ./scripts/build.sh build Release
-
-      - name: Run build
-        uses: docker/run-container-action@v3
-        with:
-          image: build-image
-          command: ./scripts/build.sh build Release
 
       - name: Get current version
         id: get_version
