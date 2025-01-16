@@ -41,7 +41,7 @@ jobs:
           git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
 
           git switch ${{ github.event.pull_request.head.ref }}
-          git pull origin origin ${{ github.event.pull_request.head.ref }}
+          git pull origin ${{ github.event.pull_request.head.ref }}
 
           if [[ "${{ github.base_ref }}" == "main" && "${{ github.head_ref }}" == "dev" ]]; then
             NEW_VERSION=$(echo "${{ steps.get_version.outputs.current_version }}" | awk -F. '{ $2 += 1; $3 = 0; print }' OFS=".")
