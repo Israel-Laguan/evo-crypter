@@ -69,6 +69,7 @@ The algorithm can be described as an iterative, function composition-based encry
 
 ### Prerequisites
 
+*		**Docker**
 *   **CMake** (version 3.10 or higher)
 *   **A C compiler** (e.g., GCC, Clang, MSVC)
 *   **Make** (or a compatible build tool, like Ninja)
@@ -82,7 +83,15 @@ The algorithm can be described as an iterative, function composition-based encry
     cd evo-crypter
     ```
 
-2. Build the project using CMake:
+2. Build the project
+
+	using Docker:
+
+    ```bash
+    docker-compose build
+    ```
+
+	using CMake:
 
     ```bash
     ./scripts/build.sh
@@ -117,6 +126,13 @@ Example:
 ```bash
 ./evo --input test_input.txt --threads 4 --generations 1,2,#
 ./evo --input encrypted.txt --threads 4 --generations 1,2,# -d
+```
+
+Or using Docker:
+
+```bash
+docker-compose run --rm dev ./evo --input test_input.txt --threads 4 --generations 1,2,#
+docker-compose run --rm dev ./evo --input encrypted.txt --threads 4 --generations 1,2,# -d
 ```
 
 ## Scripts
@@ -155,6 +171,14 @@ We welcome contributions to `evo-crypter`! If you'd like to contribute, please f
 Please see `docs/MUTATIONS.md` for instructions on adding new mutation functions.
 
 For more detailed information on contributing, coding style, etc. please see the docs folder
+
+**Docker Support:**
+
+This project now supports Docker for building and running the application in a consistent environment across different platforms (Linux, macOS, Windows). The `docker-compose.yml` file defines services for development, testing, staging, and production.
+
+**Multi-platform Support:**
+
+The use of Docker allows us to easily build and test `evo-crypter` on multiple platforms without needing a complex matrix in the GitHub Actions workflows. The Dockerfile creates a base image with the necessary dependencies and then builds the application within the container.
 
 ## License
 

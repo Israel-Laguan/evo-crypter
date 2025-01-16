@@ -29,16 +29,32 @@ jobs:
         id: get_version
         run: echo "current_version=$(cat version.txt)" >> $GITHUB_OUTPUT
 
-      - name: Update version
+      - name: Determine branch type and update version
+        id: update_version
         run: |
-          ./scripts/update_version.sh $(echo "${{ steps.get_version.outputs.current_version }}" | awk -F. '{ $NF += 1; print }' OFS=".")
+          BRANCH_NAME=$(echo ${{ github.ref }} | sed 's|refs/heads/||')
+          if [[ "$BRANCH_NAME" == "main" ]]; then
+            # Merging into main from a release branch, update minor version
+            NEW_VERSION=$(echo "${{ steps.get_version.outputs.current_version }}" | awk -F. '{ $2++; $3=0; print }' OFS=".")
+          elif [[ "$BRANCH_NAME" == "dev" ]]; then
+            # Merging into main from dev, update patch version
+            NEW_VERSION=$(echo "${{ steps.get_version.outputs.current_version }}" | awk -F. '{ $3++; print }' OFS=".")
+          elif [[ "$BRANCH_NAME" =~ ^release-.*$ ]]; then
+            # Merging into main from a release-* branch, update major version
+            NEW_VERSION=$(echo "${{ steps.get_version.outputs.current_version }}" | awk -F. '{ $1++; $2=0; $3=0; print }' OFS=".")
+          else
+            # Default: update patch version (for other branches)
+            NEW_VERSION=$(echo "${{ steps.get_version.outputs.current_version }}" | awk -F. '{ $3++; print }' OFS=".")
+          fi
+          echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          ./scripts/update_version.sh "$NEW_VERSION"
 
       - name: Create GitHub release
         uses: softprops/action-gh-release@v1
         if: ${{ success() }}
         with:
-          tag_name: v${{ steps.get_version.outputs.current_version }}
-          name: Release v${{ steps.get_version.outputs.current_version }}
+          tag_name: v${{ steps.update_version.outputs.new_version }}
+          name: Release v${{ steps.update_version.outputs.new_version }}
           draft: false
           prerelease: false
           files: |

@@ -5,6 +5,10 @@ on:
     types: [opened, synchronize, reopened]
     branches: [ "main", "dev", "**" ]
 
+  push:
+    branches:
+      - "**"
+
 jobs:
   lint-test-build:
     name: Lint, Test, and Build
