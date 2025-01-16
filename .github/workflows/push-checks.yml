@@ -49,13 +49,3 @@ jobs:
       - name: Build project (Debug)
         if: steps.check_pr.conclusion == 'success'
         run: ./scripts/build.sh
-
-      - name: Get current version
-        if: steps.check_pr.conclusion == 'success'
-        id: get_version
-        run: echo "current_version=$(cat version.txt)" >> $GITHUB_OUTPUT
-
-      - name: Update patch version (feature or feat branches)
-        if: steps.check_pr.conclusion == 'success' && startsWith(github.ref, 'refs/heads/feature/') || startsWith(github.ref, 'refs/heads/feat/')
-        run: |
-          ./scripts/update_version.sh $(echo "${{ steps.get_version.outputs.current_version }}" | awk -F. '{ $NF += 1; print }' OFS=".")

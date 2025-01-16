@@ -27,6 +27,37 @@ jobs:
       - name: Build project (Debug)
         run: ./scripts/build.sh
 
+      - name: Get current version
+        id: get_version
+        run: echo "current_version=$(cat version.txt)" >> $GITHUB_OUTPUT
+
+      - name: Update version based on branch
+        run: |
+          if [[ "${{ github.base_ref }}" == "main" && "${{ github.head_ref }}" == "dev" ]]; then
+            NEW_VERSION=$(echo "${{ steps.get_version.outputs.current_version }}" | awk -F. '{ $2 += 1; $3 = 0; print }' OFS=".")
+            ./scripts/update_version.sh "$NEW_VERSION"
+            git push
+          elif [[ "${{ github.base_ref }}" == "main" && "${{ github.head_ref }}" =~ ^release/.* ]]; then
+            NEW_VERSION=$(echo "${{ steps.get_version.outputs.current_version }}" | awk -F. '{ $1 += 1; $2 = $3 = 0; print }' OFS=".")
+            ./scripts/update_version.sh "$NEW_VERSION"
+            git push
+          elif [[ "${{ github.base_ref }}" == "main" && "${{ github.head_ref }}" =~ ^hotfix/.* ]]; then
+            NEW_VERSION=$(echo "${{ steps.get_version.outputs.current_version }}" | awk -F. '{ $NF += 1; print }' OFS=".")
+            ./scripts/update_version.sh "$NEW_VERSION"
+            git push
+          elif [[ "${{ github.base_ref }}" == "dev" ]]; then
+            NEW_VERSION=$(echo "${{ steps.get_version.outputs.current_version }}" | awk -F. '{ $NF += 1; print }' OFS=".")
+            ./scripts/update_version.sh "$NEW_VERSION"
+            git push
+          fi
+      - name: Commit version update
+        if: steps.update_version.conclusion == 'success'
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add version.txt
+          git commit -m "chore: Bump version to ${{ steps.get_version.outputs.new_version }}"
+
   codeql-analysis:
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev'
     runs-on: ubuntu-latest
