@@ -1,0 +1,38 @@
+name: Dev Build
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  build:
+    name: Build and Update Patch Version
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libcmocka-dev
+
+      - name: Build project (Release)
+        run: ./scripts/build.sh build Release
+
+      - name: Run build
+        uses: docker/run-container-action@v3
+        with:
+          image: build-image
+          command: ./scripts/build.sh build Release
+
+      - name: Get current version
+        id: get_version
+        run: echo "current_version=$(cat version.txt)" >> $GITHUB_OUTPUT
+
+      - name: Update patch version
+        run: |
+          ./scripts/update_version.sh $(echo "${{ steps.get_version.outputs.current_version }}" | awk -F. '{ $NF += 1; print }' OFS=".")
