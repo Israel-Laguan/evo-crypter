@@ -34,12 +34,12 @@ fi
 
 # Run clang-format (check mode)
 echo "Running clang-format (check mode)..."
-FORMAT_OUTPUT=$(find . -iname '*.h' -o -iname '*.c' | xargs clang-format --dry-run)
+FORMAT_OUTPUT=$(find src -iname '*.h' -o -iname '*.c' | xargs clang-format --dry-run)
 
 # Check for clang-format errors
 if [ $? -ne 0 ]; then
     echo "clang-format found formatting issues. Applying fixes..."
-    find . -iname '*.h' -o -iname '*.c' | xargs clang-format -i
+    find src -iname '*.h' -o -iname '*.c' | xargs clang-format -i
     echo "clang-format fixes applied."
 else
     echo "No formatting errors found by clang-format."

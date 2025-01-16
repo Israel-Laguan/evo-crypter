@@ -2,8 +2,8 @@
 
 set -e
 
-# Set the build directory
-BUILD_DIR="build"
+# Set the build directory (default: build/)
+BUILD_DIR="${1:-build}"
 
 # Check if being run from the root directory
 if [ ! -f "src/main.c" ]; then
@@ -21,15 +21,15 @@ fi
 mkdir -p "$BUILD_DIR"
 
 # Change to the build directory
-cd "$BUILD_DIR"
+# cd "$BUILD_DIR"
 
-# Configure CMake
+# Configure CMake (using environment variable for build type)
 echo "Configuring CMake..."
-cmake ..
+cmake -B "$BUILD_DIR" -S . -DCMAKE_BUILD_TYPE="$CMAKE_BUILD_TYPE"
 
 # Build the project
 echo "Building the project..."
-cmake --build .
+cmake --build "$BUILD_DIR" --config "$CMAKE_BUILD_TYPE"
 
 # Check if the build was successful
 if [ $? -eq 0 ]; then

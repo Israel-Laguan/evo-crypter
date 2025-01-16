@@ -1,0 +1,45 @@
+name: Main Build and Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-release:
+    name: Build and Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Fetch all history for git tag
+
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libcmocka-dev clang clang-tidy clang-format cppcheck
+
+      - name: Build project (Release)
+        run: ./scripts/build.sh build Release
+
+      - name: Get current version
+        id: get_version
+        run: echo "current_version=$(cat version.txt)" >> $GITHUB_OUTPUT
+
+      - name: Update version
+        run: |
+          ./scripts/update_version.sh $(echo "${{ steps.get_version.outputs.current_version }}" | awk -F. '{ $NF += 1; print }' OFS=".")
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v1
+        if: ${{ success() }}
+        with:
+          tag_name: v${{ steps.get_version.outputs.current_version }}
+          name: Release v${{ steps.get_version.outputs.current_version }}
+          draft: false
+          prerelease: false
+          files: |
+            build/evo

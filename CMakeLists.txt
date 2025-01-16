@@ -15,40 +15,14 @@ find_package(cmocka)
 if(NOT cmocka_FOUND)
     message(WARNING "cmocka not found. Trying to install it...")
 
-    if(CMAKE_SYSTEM_NAME MATCHES "Linux")
-        # Check if apt is available
-        find_program(APT_EXECUTABLE apt)
-        if(APT_EXECUTABLE)
-            execute_process(
-                COMMAND sudo apt-get update
-                COMMAND sudo apt-get install -y libcmocka-dev
-                RESULT_VARIABLE APT_INSTALL_RESULT
-            )
-            if(NOT APT_INSTALL_RESULT EQUAL 0)
-                message(FATAL_ERROR "Failed to install cmocka using apt-get. Please install it manually.")
-            endif()
-        else()
-            message(FATAL_ERROR "apt package manager not found. Please install cmocka manually.")
-        endif()
-    elseif(CMAKE_SYSTEM_NAME MATCHES "Darwin")
-        # Check if brew is available
-        find_program(BREW_EXECUTABLE brew)
-        if(BREW_EXECUTABLE)
-            execute_process(
-                COMMAND brew update
-                COMMAND brew install cmocka
-                RESULT_VARIABLE BREW_INSTALL_RESULT
-            )
-            if(NOT BREW_INSTALL_RESULT EQUAL 0)
-                message(FATAL_ERROR "Failed to install cmocka using brew. Please install it manually.")
-            endif()
-						set(CMAKE_C_FLAGS_DEBUG "-I/usr/local/include/cmocka.h")
-						message(WARNING "cmocka installed and linked.")
-        else()
-            message(FATAL_ERROR "brew package manager not found. Please install cmocka manually.")
-        endif()
-    else()
-        message(FATAL_ERROR "Unsupported operating system. Please install cmocka manually.")
+    execute_process(
+        COMMAND sudo apt-get update
+        COMMAND sudo apt-get install -y libcmocka-dev
+        RESULT_VARIABLE INSTALL_RESULT
+    )
+
+    if(NOT INSTALL_RESULT EQUAL 0)
+        message(FATAL_ERROR "Failed to install cmocka. Please install it manually.")
     endif()
 
     find_package(cmocka REQUIRED)

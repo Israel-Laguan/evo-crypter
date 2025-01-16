@@ -25,9 +25,9 @@ void handle_input_flag(Config* config, char* value) {
  * @param value The value associated with the flag (number of threads).
  */
 void handle_threads_flag(Config* config, char* value) {
-  char error_buffer[1024];
   config->threads = atoi(value);
   if (config->threads <= 0) {
+    char error_buffer[1024];
     snprintf(error_buffer, sizeof(error_buffer),
 	     "Error: --threads value must be a positive integer.\n");
     fprintf(stderr, "%s", error_buffer);
