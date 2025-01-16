@@ -1,99 +1,94 @@
 # Versioning Strategy for evo-crypter
 
-This document outlines the versioning strategy used in the `evo-crypter` project, which is based on [Semantic Versioning 2.0.0](https://semver.org/) (SemVer) and incorporates elements of [Gitflow Workflow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow).
+The `evo-crypter` project uses **Semantic Versioning (SemVer)** as its core versioning scheme. This document outlines how version numbers are assigned, the different types of branches used, and the automated workflows that manage version updates.
 
 ## Semantic Versioning (SemVer)
 
-We use Semantic Versioning to manage the project's releases. SemVer defines a version number as:
+We adhere to the SemVer specification, which means that a version number is composed of three parts:
 
-`MAJOR.MINOR.PATCH`
+*   **MAJOR.MINOR.PATCH**
 
-Where:
+    *   **MAJOR** version is incremented when incompatible API changes are made.
+    *   **MINOR** version is incremented when new functionality is added in a backward-compatible manner.
+    *   **PATCH** version is incremented when backward-compatible bug fixes are made.
 
-*   **MAJOR** version is incremented when incompatible API changes are made.
-*   **MINOR** version is incremented when functionality is added in a backward-compatible manner.
-*   **PATCH** version is incremented when backward-compatible bug fixes are made.
+## Branching Model
 
-## Gitflow Workflow and Branching Model
+The `evo-crypter` project employs the following branching model:
 
-We utilize a simplified Gitflow model with the following branches:
+*   **`main`:**  The main branch represents the latest stable release of the software. Merges to `main` typically trigger a new release and are associated with a version bump.
+*   **`dev`:** The development branch is where new features and bug fixes are integrated before being released to `main`.
+*   **`feature/` branches:** Feature branches are created to develop new features. They branch off from `dev` and are merged back into `dev` when the feature is complete and tested.
+*   **`release/` branches:** Release branches are used to prepare for a new major release. They branch off from `dev` and are merged into both `main` and `dev` when the release is ready.
+*   **`hotfix/` branches:** Hotfix branches are used to address critical bugs in production releases. They branch off from `main` and are merged back into both `main` and `dev` when the hotfix is complete.
 
-*   **`main`:** Represents the production-ready code. Only merges from `dev`, `release/*`, and `hotfix/*` branches are allowed.
-*   **`dev`:** The main development branch. All feature branches merge into `dev`.
-*   **`feature/*` or `feat/*`:** Branches for developing new features. These are created from `dev` and merge back into `dev`.
-*   **`release/*`:** Branches for preparing releases. These are created from `dev` and merge into both `main` and `dev`.
-*   **`hotfix/*`:** Branches for critical bug fixes in production. These are created from `main` and merge into both `main` and `dev`.
+## Version Update Workflow
 
-## Version Updates in GitHub Actions
+The `evo-crypter` project utilizes GitHub Actions to automate the version update process. The following workflows are defined:
 
-Our GitHub Actions workflows automate version updates based on the branch being merged and the source branch of the pull request:
+### `update-version.yml`
 
-**`push-checks.yml`:**
+This workflow is triggered when a pull request is opened, reopened, or synchronized against the `main` or `dev` branch or any other branch. It performs the following actions:
 
-*   Runs on pushes to any branch **except** `main`.
-*   If the push is to a `feature/*` or `feat/*` branch, the **PATCH** version is automatically incremented.
+1. **Checks out the code** from the branch where the pull request originates.
+2. **Determines the current version** from the `version.txt` file.
+3. **Updates the version number** based on the base branch and the head branch of the pull request:
+    *   If the base branch is `main` and the head branch is `dev`:
+        *   Increments the **MINOR** version.
+        *   Resets the **PATCH** version to 0.
+    *   If the base branch is `main` and the head branch starts with `release/`:
+        *   Increments the **MAJOR** version.
+        *   Resets the **MINOR** and **PATCH** versions to 0.
+    *   If the base branch is `main` and the head branch starts with `hotfix/`:
+        *   Increments the **PATCH** version.
+    *   If the base branch is `dev`:
+        *   Increments the **PATCH** version.
+4. **Updates the `version.txt` file** with the new version.
+5. **Commits the change** to `version.txt` with a message like "chore: Bump version to X.Y.Z".
+6. **Pushes the commit** back to the pull request's branch using a force push.
 
-**`dev-build.yml`:**
+### `main-build.yml`
 
-*   Runs on pushes to the `dev` branch.
-*   Automatically increments the **PATCH** version.
+This workflow is triggered when changes are pushed to the `main` branch. It handles the build and release process:
 
-**`main-build.yml`:**
+1. **Checks out the code**.
+2. **Installs dependencies**.
+3. **Builds the project** in Release mode.
+4. **Retrieves the current version** from the `version.txt` file.
+5. **Creates a GitHub release** tagged with the new version (e.g., `vX.Y.Z`). The executable (`build/evo`) is attached to the release.
 
-*   Runs on pushes to the `main` branch (typically through merges).
-*   Determines the version update based on the source branch of the merge:
-    *   **`dev`:** Increments the **MINOR** version and resets the **PATCH** version to 0.
-    *   **`release/*`:** Increments the **MAJOR** version and resets the **MINOR** and **PATCH** versions to 0.
-    *   **`hotfix/*` or direct pushes:** Increments the **PATCH** version.
+### `pr-checks.yml`
 
-## Branch Protection Rules
+This workflow is triggered on pull requests targeting the `main`, `dev` and any other branch. It performs the following checks:
 
-To enforce this workflow, we use GitHub branch protection rules:
+1. **Runs the linter** to ensure code quality.
+2. **Runs unit tests** to verify code correctness.
+3. **Builds the project** in Debug mode to check for compilation errors.
+4. **Perform CodeQL** to check for security vulnerabilities.
 
-*   **`main` branch:**
-    *   Require pull request reviews before merging.
-    *   Require status checks to pass before merging (ensuring `main-build.yml` passes).
-    *   Prohibit direct pushes (except for very specific cases, where the **PATCH** version will be incremented).
-    *   Only allow merges from `dev`, `release/*`, and `hotfix/*` branches.
-*   **`dev` branch:**
-    *   Require pull request reviews before merging.
-    *   Require status checks to pass before merging (ensuring `dev-build.yml` passes).
-    *   Only allow merges from `feature/*`, `feat/*`, and `release/*` branches.
-*   **`feature/*`, `feat/*`, `release/*`, and `hotfix/*` branches:**
-    *   Require status checks to pass before merging (ensuring `push-checks.yml` passes).
+### `push-checks.yml`
 
-## Examples
+This workflow is triggered on pushes to branches other than `main`. It performs the following actions:
 
-**Scenario 1: New Feature Development**
+1. **Checks for existing PRs**: If an open PR already exists for the branch, the workflow exits early, skipping the remaining steps.
+2. **Runs the linter** to ensure code quality.
+3. **Runs unit tests** to verify code correctness.
+4. **Builds the project** in Debug mode to check for compilation errors.
 
-1. A developer creates a branch `feature/new-encryption` from `dev`.
-2. Code is developed and pushed to `feature/new-encryption`. `push-checks.yml` runs and increments the **PATCH** version (e.g., 0.1.0 becomes 0.1.1).
-3. A pull request is created to merge `feature/new-encryption` into `dev`.
-4. `pr-checks.yml` runs to ensure code quality.
-5. After review, the pull request is merged into `dev`.
-6. `dev-build.yml` runs and increments the **PATCH** version again (e.g., 0.1.1 becomes 0.1.2).
+## Manual Version Updates
 
-**Scenario 2: Release Preparation**
+While the workflows automate most version updates, you can manually update the version number by editing the `version.txt` file and running the `scripts/update_version.sh` script. This script also allows you to create and push a Git tag for the new version.
 
-1. A branch `release/1.0.0` is created from `dev`.
-2. Final testing and adjustments are made on the `release/1.0.0` branch.
-3. A pull request is created to merge `release/1.0.0` into `main`.
-4. `pr-checks.yml` runs.
-5. After review, the pull request is merged into `main`.
-6. `main-build.yml` runs, detects the `release/*` branch, increments the **MAJOR** version (e.g., 0.1.2 becomes 1.0.0), and creates a GitHub release.
-7. The `release/1.0.0` branch is also merged back into `dev` (potentially with manual conflict resolution if necessary).
+**Example:**
 
-**Scenario 3: Hotfix**
+```bash
+./scripts/update_version.sh 0.3.0
+```
 
-1. A critical bug is found in production (version 1.0.0).
-2. A branch `hotfix/typo-fix` is created from `main`.
-3. The bug fix is implemented and pushed to `hotfix/typo-fix`. `push-checks.yml` runs.
-4. A pull request is created to merge `hotfix/typo-fix` into `main`.
-5. `pr-checks.yml` runs.
-6. After review, the pull request is merged into `main`.
-7. `main-build.yml` runs, detects the `hotfix/*` branch, increments the **PATCH** version (e.g., 1.0.0 becomes 1.0.1), and creates a GitHub release.
-8. The `hotfix/typo-fix` branch is also merged into `dev`.
+This will update `version.txt` to `0.3.0`, create a Git tag `v0.3.0`, and optionally push the tag to the remote repository.
 
-## Conclusion
+## Important Notes
 
-This versioning strategy, combined with GitHub Actions and branch protection rules, provides a structured and automated way to manage releases, ensuring code quality and consistency in the `evo-crypter` project.
+*   The `update-version.yml` workflow requires appropriate permissions to push to branches. Ensure that your repository settings allow GitHub Actions to create and approve pull requests and that the workflow has write permissions.
+*   If you have branch protection rules on `main`, make sure they don't prevent the workflow from pushing to pull request branches. You might need to add an exception for the GitHub Actions user.
+*   In case of conflicts between the automated version bump and other changes in a pull request, you'll need to resolve them manually.
