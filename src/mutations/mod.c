@@ -116,7 +116,7 @@ void* apply_mutations_to_chunk(void* arg, const char* generations,
   }
 
   // Iterate through the generation sequence
-  char* token = strtok(generations_copy, ",");
+  const char* token = strtok(generations_copy, ",");
   while (token != NULL) {
     for (size_t j = 0; j < strlen(token); j++) {
       char symbol = token[j];

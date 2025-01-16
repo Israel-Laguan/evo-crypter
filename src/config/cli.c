@@ -10,7 +10,7 @@
  * @param config The Config struct to update.
  * @param value The value associated with the flag (input file path).
  */
-void handle_input_flag(Config* config, char* value) {
+void handle_input_flag(Config* config, const char* value) {
   config->input_file = strdup(value);
   if (config->input_file == NULL) {
     perror("Error allocating memory for input_file");
@@ -24,7 +24,7 @@ void handle_input_flag(Config* config, char* value) {
  * @param config The Config struct to update.
  * @param value The value associated with the flag (number of threads).
  */
-void handle_threads_flag(Config* config, char* value) {
+void handle_threads_flag(Config* config, const char* value) {
   config->threads = atoi(value);
   if (config->threads <= 0) {
     char error_buffer[1024];
@@ -41,7 +41,7 @@ void handle_threads_flag(Config* config, char* value) {
  * @param config The Config struct to update.
  * @param value The value associated with the flag (generations string).
  */
-void handle_generations_flag(Config* config, char* value) {
+void handle_generations_flag(Config* config, const char* value) {
   config->generations = strdup(value);
   if (config->generations == NULL) {
     perror("Error allocating memory for generations");
@@ -55,7 +55,7 @@ void handle_generations_flag(Config* config, char* value) {
  * @param config The Config struct to update.
  * @param value The value associated with the flag (NULL in this case).
  */
-void handle_decrypt_flag(Config* config, char* value) {
+void handle_decrypt_flag(Config* config, const char* value) {
   (void)value;
   config->decrypt = true;
 }
@@ -66,7 +66,7 @@ void handle_decrypt_flag(Config* config, char* value) {
  * @param config The Config struct to update.
  * @param value The value associated with the flag (NULL in this case).
  */
-void handle_help_flag(Config* config, char* value) {
+void handle_help_flag(Config* config, const char* value) {
   (void)value;
   config->help = true;
 }
@@ -75,7 +75,7 @@ void handle_help_flag(Config* config, char* value) {
 typedef struct {
   const char* short_name;
   const char* long_name;
-  void (*handler)(Config* config, char* value);
+  void (*handler)(Config* config, const char* value);
 } FlagHandler;
 
 /**
