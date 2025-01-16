@@ -46,9 +46,6 @@ jobs:
             NEW_VERSION=$(echo "${{ steps.get_version.outputs.current_version }}" | awk -F. '{ $NF += 1; print }' OFS=".")
             ./scripts/update_version.sh "$NEW_VERSION"
           fi
-      - name: Commit version update
-        if: steps.update_version.conclusion == 'success'
-        run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add version.txt

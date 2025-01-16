@@ -23,28 +23,31 @@ jobs:
               head: `${context.repo.owner}:${context.ref.replace('refs/heads/', '')}`
             });
             if (prs.data.length > 0) {
-              core.setFailed('An open PR already exists for this branch. Skipping push checks.');
+              console.log('An open PR already exists for this branch. Skipping push checks.');
             }
 
+            core.setOutput('pr_exists', prs.data.length > 0);
+
       - name: Checkout code
-        if: steps.check_pr.conclusion == 'success'
+        if: steps.pr-check.outputs.pr_exists == 'false'
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
       - name: Install Dependencies
+        if: steps.pr-check.outputs.pr_exists == 'false'
         run: |
           sudo apt-get update
           sudo apt-get install -y libcmocka-dev clang clang-tidy clang-format cppcheck
 
       - name: Run linter
-        if: steps.check_pr.conclusion == 'success'
+        if: steps.pr-check.outputs.pr_exists == 'false'
         run: ./scripts/lint.sh
 
       - name: Run tests
-        if: steps.check_pr.conclusion == 'success'
+        if: steps.pr-check.outputs.pr_exists == 'false'
         run: ./scripts/test.sh
 
       - name: Build project (Debug)
-        if: steps.check_pr.conclusion == 'success'
+        if: steps.pr-check.outputs.pr_exists == 'false'
         run: ./scripts/build.sh
