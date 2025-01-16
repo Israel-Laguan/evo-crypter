@@ -2,6 +2,9 @@ name: Main Build and Release
 
 on:
   push:
+    paths:
+      - '**/*.c'
+      - '**/*.h'
     branches:
       - main
 

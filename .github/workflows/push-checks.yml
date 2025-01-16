@@ -2,6 +2,9 @@ name: Push Checks
 
 on:
   push:
+    paths:
+      - '**/*.c'
+      - '**/*.h'
     branches-ignore:
       - main
 
