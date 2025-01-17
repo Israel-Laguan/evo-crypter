@@ -87,3 +87,28 @@ add_custom_target(tests DEPENDS config_tests file_tests mutations_tests)
 add_test(NAME config_tests COMMAND config_tests)
 add_test(NAME file_tests COMMAND file_tests)
 add_test(NAME mutations_tests COMMAND mutations_tests)
+
+# --- Code Coverage Setup ---
+# Check if a coverage build is requested
+if(CMAKE_BUILD_TYPE MATCHES "Debug")
+    message(STATUS "Enabling coverage build")
+
+		# Include CTest module for coverage reporting
+		include(CTest)
+
+    # Set coverage options for the library
+    target_compile_options(evo_lib PRIVATE -coverage)
+    target_link_options(evo_lib PRIVATE -coverage)
+
+    # Set coverage options for the executable
+    target_compile_options(evo PRIVATE -coverage)
+    target_link_options(evo PRIVATE -coverage)
+
+    # Set coverage options for the test executables
+    target_compile_options(config_tests PRIVATE -coverage)
+    target_link_options(config_tests PRIVATE -coverage)
+    target_compile_options(file_tests PRIVATE -coverage)
+    target_link_options(file_tests PRIVATE -coverage)
+    target_compile_options(mutations_tests PRIVATE -coverage)
+    target_link_options(mutations_tests PRIVATE -coverage)
+endif()

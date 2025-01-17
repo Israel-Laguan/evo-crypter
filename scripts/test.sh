@@ -8,13 +8,16 @@ if [ ! -f "src/main.c" ]; then
   exit 1
 fi
 
+# Wipe out any outdated coverage information
+find . -name '*.gcda' -delete
+
 # Build the project
-./scripts/build.sh
+CMAKE_BUILD_TYPE=Debug ./scripts/build.sh
 
 # Run tests using ctest
 echo "Running tests..."
 cd build || exit
-ctest
+ctest -T Test && ctest -T Coverage
 
 # Check if tests were successful
 if [ $? -eq 0 ]; then

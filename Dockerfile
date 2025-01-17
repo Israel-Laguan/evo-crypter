@@ -23,8 +23,8 @@
 	# --- Testing Stage ---
 	FROM base AS testing
 
-	# Set build type to Release for optimized test runs
-	ENV CMAKE_BUILD_TYPE=Release
+	# Set build type to Debug for optimized test runs
+	ENV CMAKE_BUILD_TYPE=Debug
 
 	# Use build.sh for building
 	COPY scripts/build.sh /app/scripts/
