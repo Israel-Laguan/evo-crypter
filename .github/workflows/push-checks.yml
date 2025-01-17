@@ -47,10 +47,6 @@ jobs:
         if: steps.pr-check.outputs.pr_exists == 'false'
         run: ./scripts/lint.sh
 
-      - name: Run tests
+      - name: Build project (Debug) and Run tests
         if: steps.pr-check.outputs.pr_exists == 'false'
-        run: ./scripts/test.sh
-
-      - name: Build project (Debug)
-        if: steps.pr-check.outputs.pr_exists == 'false'
-        run: ./scripts/build.sh
+        run: ./scripts/test.sh # implicit build before tests
