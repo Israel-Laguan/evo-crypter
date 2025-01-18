@@ -1,13 +1,8 @@
 #include "utils.h"
 #include <cmocka.h>
-#include <setjmp.h>
-#include <stdarg.h>
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
+#include <stdlib.h>   // free
+#include <sys/stat.h> // chmod
+#include <unistd.h>   // write
 
 // Helper function to create a temporary file for testing
 static char* create_temp_file(const char* content) {
@@ -81,6 +76,29 @@ static void test_file_exists_empty_file(void** state) {
   free(temp_filename);
 }
 
+static void test_file_exists_nonexistent_file_enoent(void** state) {
+  assert_false(file_exists("definitely_nonexistent_file.txt"));
+}
+
+static void test_file_exists_permission_error(void** state) {
+  // Create a temporary file
+  char* temp_filename = create_temp_file("test content");
+  assert_non_null(temp_filename);
+
+  // Change the permissions to make it unreadable
+  chmod(temp_filename, 0000); // Remove all permissions
+
+  // The file exists, but we can't open it due to permissions
+  assert_false(file_exists(temp_filename));
+
+  // Restore permissions (for cleanup)
+  chmod(temp_filename, 0644);
+
+  // Clean up
+  remove(temp_filename);
+  free(temp_filename);
+}
+
 int main(void) {
   const struct CMUnitTest tests[] = {
       cmocka_unit_test(test_reverse_generations_empty_string),
@@ -91,6 +109,8 @@ int main(void) {
       cmocka_unit_test(test_file_exists_existing_file),
       cmocka_unit_test(test_file_exists_nonexistent_file),
       cmocka_unit_test(test_file_exists_empty_file),
+      cmocka_unit_test(test_file_exists_nonexistent_file_enoent),
+      cmocka_unit_test(test_file_exists_permission_error),
   };
 
   return cmocka_run_group_tests(tests, NULL, NULL);

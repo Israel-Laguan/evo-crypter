@@ -1,8 +1,5 @@
 #include "mod.h"
-#include "../file/input_processing.h"
 #include <cmocka.h>
-#include <stdio.h>
-#include <string.h>
 
 // Define a struct to hold the mutation symbol and its corresponding up and down
 // functions

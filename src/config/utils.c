@@ -1,7 +1,5 @@
 #include "utils.h"
-#include <ctype.h>
-#include <stdbool.h>
-#include <stdio.h>
+#include <ctype.h> // isdigit
 
 void print_usage(const char* program_name) {
   printf("Usage: %s --input <input_file> --threads <num_threads> --generations "

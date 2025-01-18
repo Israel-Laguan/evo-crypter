@@ -32,17 +32,9 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-# Run clang-format (check mode)
+# Run clang-format
+find src -iname '*.h' -o -iname '*.c' | xargs clang-format -i
 echo "Running clang-format (check mode)..."
-FORMAT_OUTPUT=$(find src -iname '*.h' -o -iname '*.c' | xargs clang-format --dry-run)
-
-# Check for clang-format errors
-if [ $? -ne 0 ]; then
-    echo "clang-format found formatting issues. Applying fixes..."
-    find src -iname '*.h' -o -iname '*.c' | xargs clang-format -i
-    echo "clang-format fixes applied."
-else
-    echo "No formatting errors found by clang-format."
-fi
+find src -iname '*.h' -o -iname '*.c' | xargs clang-format --dry-run
 
 echo "No linting or formatting errors found."

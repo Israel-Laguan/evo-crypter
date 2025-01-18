@@ -8,7 +8,9 @@
 
 #include <setjmp.h>
 #include <stdbool.h>
-#include <stdio.h>
+#include <stddef.h> // stdio.h dep
+#include <stdio.h>  // fopen
+#include <string.h> // strlen
 
 /**
  * @brief Reverses the order of characters in a string.

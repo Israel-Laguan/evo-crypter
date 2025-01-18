@@ -1,7 +1,5 @@
 #include "utils.h"
 #include <cmocka.h>
-#include <stdio.h>
-#include <string.h>
 
 // Test cases for print_usage
 // (Testing void functions that print to stdout/stderr can be tricky.

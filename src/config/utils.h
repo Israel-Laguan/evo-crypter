@@ -7,9 +7,8 @@
 #define EVO_CONFIG_UTILS_H
 
 #include <setjmp.h>
-#include <stdarg.h>
-#include <stdbool.h>
-#include <stddef.h>
+#include <stdbool.h> // bool
+#include <stdio.h>
 
 /**
  * @brief Prints the program's usage information to the console.

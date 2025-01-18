@@ -1,9 +1,7 @@
 #include "mod.h"
 #include "../file/input_processing.h"
 #include "../file/utils.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <stdlib.h> // free
 
 #define BUFFER_SIZE 1024
 
