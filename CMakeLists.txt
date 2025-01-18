@@ -44,7 +44,6 @@ add_library(evo_lib ${SOURCES})
 target_compile_options(evo_lib PRIVATE
     $<$<OR:$<CXX_COMPILER_ID:GNU>,$<CXX_COMPILER_ID:Clang>>:-Wall -Wextra>
     $<$<CXX_COMPILER_ID:MSVC>:/W3>
-    -g  # Enable debugging symbols
 )
 
 # Link pthreads to the library
@@ -91,24 +90,30 @@ add_test(NAME mutations_tests COMMAND mutations_tests)
 # --- Code Coverage Setup ---
 # Check if a coverage build is requested
 if(CMAKE_BUILD_TYPE MATCHES "Debug")
-    message(STATUS "Enabling coverage build")
+    message(STATUS "Enabling debug/coverage build")
 
 		# Include CTest module for coverage reporting
 		include(CTest)
 
     # Set coverage options for the library
-    target_compile_options(evo_lib PRIVATE -coverage)
-    target_link_options(evo_lib PRIVATE -coverage)
+    target_compile_options(evo_lib PRIVATE -g --coverage)
+    target_link_options(evo_lib PRIVATE --coverage)
 
     # Set coverage options for the executable
-    target_compile_options(evo PRIVATE -coverage)
-    target_link_options(evo PRIVATE -coverage)
+    target_compile_options(evo PRIVATE -g --coverage)
+    target_link_options(evo PRIVATE --coverage)
 
     # Set coverage options for the test executables
-    target_compile_options(config_tests PRIVATE -coverage)
-    target_link_options(config_tests PRIVATE -coverage)
-    target_compile_options(file_tests PRIVATE -coverage)
-    target_link_options(file_tests PRIVATE -coverage)
-    target_compile_options(mutations_tests PRIVATE -coverage)
-    target_link_options(mutations_tests PRIVATE -coverage)
+    target_compile_options(config_tests PRIVATE -g --coverage)
+    target_link_options(config_tests PRIVATE --coverage)
+    target_compile_options(file_tests PRIVATE -g --coverage)
+    target_link_options(file_tests PRIVATE --coverage)
+    target_compile_options(mutations_tests PRIVATE -g --coverage)
+    target_link_options(mutations_tests PRIVATE --coverage)
+    # target_compile_options(config_mod_tests PRIVATE -g --coverage)
+    # target_link_options(config_mod_tests PRIVATE --coverage)
+    # target_compile_options(config_cli_tests PRIVATE -g --coverage)
+    # target_link_options(config_cli_tests PRIVATE --coverage)
+    # target_compile_options(file_input_processing_tests PRIVATE -g --coverage)
+    # target_link_options(file_input_processing_tests PRIVATE --coverage)
 endif()

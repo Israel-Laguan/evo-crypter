@@ -5,6 +5,9 @@ set -e
 # Set the build directory (default: build/)
 BUILD_DIR="${1:-build}"
 
+# Set the build type (default: Release)
+BUILD_TYPE="${2:-Release}"
+
 # Check if being run from the root directory
 if [ ! -f "src/main.c" ]; then
   echo "Error: build.sh must be run from the project root directory."
