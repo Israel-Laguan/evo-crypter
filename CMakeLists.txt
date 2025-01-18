@@ -81,13 +81,25 @@ target_include_directories(mutations_tests PRIVATE ${CMAKE_SOURCE_DIR}/src)
 target_compile_options(mutations_tests PRIVATE -fno-builtin)
 target_link_options(mutations_tests PRIVATE -Wl,--wrap=apply_mutation_up -Wl,--wrap=apply_mutation_down -Wl,--wrap=reverse_generations)
 
+# Add unit tests for config/cli.c
+add_executable(config_cli_tests src/config/cli.unit.c)
+target_link_libraries(config_cli_tests cmocka ${CMAKE_DL_LIBS} evo_lib)
+target_include_directories(config_cli_tests PRIVATE ${CMAKE_SOURCE_DIR}/src)
+
+# Add unit tests for config/mod.c
+add_executable(config_mod_tests src/config/mod.unit.c)
+target_link_libraries(config_mod_tests cmocka ${CMAKE_DL_LIBS} evo_lib)
+target_include_directories(config_mod_tests PRIVATE ${CMAKE_SOURCE_DIR}/src)
+
 # Add the test targets to the default build
-add_custom_target(tests DEPENDS config_tests file_tests mutations_tests)
+add_custom_target(tests DEPENDS config_tests file_tests mutations_tests config_cli_tests config_mod_tests)
 
 # Add commands to run the tests
 add_test(NAME config_tests COMMAND config_tests)
 add_test(NAME file_tests COMMAND file_tests)
 add_test(NAME mutations_tests COMMAND mutations_tests)
+add_test(NAME config_cli_tests COMMAND config_cli_tests)
+add_test(NAME config_mod_tests COMMAND config_mod_tests)
 
 # --- Code Coverage Setup ---
 # Check if a coverage build is requested
@@ -112,10 +124,10 @@ if(CMAKE_BUILD_TYPE MATCHES "Debug")
     target_link_options(file_tests PRIVATE --coverage)
     target_compile_options(mutations_tests PRIVATE -g --coverage)
     target_link_options(mutations_tests PRIVATE --coverage)
-    # target_compile_options(config_mod_tests PRIVATE -g --coverage)
-    # target_link_options(config_mod_tests PRIVATE --coverage)
-    # target_compile_options(config_cli_tests PRIVATE -g --coverage)
-    # target_link_options(config_cli_tests PRIVATE --coverage)
+    target_compile_options(config_mod_tests PRIVATE -g --coverage)
+    target_link_options(config_mod_tests PRIVATE --coverage)
+    target_compile_options(config_cli_tests PRIVATE -g --coverage)
+    target_link_options(config_cli_tests PRIVATE --coverage)
     # target_compile_options(file_input_processing_tests PRIVATE -g --coverage)
     # target_link_options(file_input_processing_tests PRIVATE --coverage)
 endif()
