@@ -96,6 +96,12 @@ void apply_mutation_down(char symbol, char* str) {
 void* apply_mutations_to_chunk(void* arg, const char* generations,
 			       bool decrypt) {
   ChunkProcessingArgs* args = (ChunkProcessingArgs*)arg;
+
+  // Handle NULL buffer case
+  if (args->buffer == NULL) {
+    return NULL;
+  }
+
   char* buffer_copy = strdup(args->buffer);
   if (!buffer_copy) {
     perror("Failed to allocate memory for buffer copy");

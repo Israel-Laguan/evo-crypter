@@ -78,6 +78,8 @@ target_include_directories(file_tests PRIVATE ${CMAKE_SOURCE_DIR}/src)
 add_executable(mutations_tests src/mutations/mod.unit.c)
 target_link_libraries(mutations_tests cmocka ${CMAKE_DL_LIBS} evo_lib) # Link against evo_lib
 target_include_directories(mutations_tests PRIVATE ${CMAKE_SOURCE_DIR}/src)
+target_compile_options(mutations_tests PRIVATE -fno-builtin)
+target_link_options(mutations_tests PRIVATE -Wl,--wrap=apply_mutation_up -Wl,--wrap=apply_mutation_down -Wl,--wrap=reverse_generations)
 
 # Add the test targets to the default build
 add_custom_target(tests DEPENDS config_tests file_tests mutations_tests)

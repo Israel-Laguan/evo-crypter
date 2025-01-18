@@ -17,7 +17,7 @@ CMAKE_BUILD_TYPE=Debug ./scripts/build.sh
 # Run tests using ctest
 echo "Running tests..."
 cd build || exit
-ctest -T Test && ctest -T Coverage
+ctest -T Test --output-on-failure && ctest -T Coverage
 
 # Check if tests were successful
 if [ $? -eq 0 ]; then

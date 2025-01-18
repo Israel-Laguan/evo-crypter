@@ -95,6 +95,10 @@ We welcome contributions! See `docs/CONTRIBUTING.md` for guidelines.
 *   Version updates are typically handled automatically by the GitHub Actions workflows.
 *   If you need to update the version manually, you can edit `version.txt` and run `./scripts/update_version.sh <new_version>`.
 
+## Acknowledges
+
+- [code coverage with cmake article](https://www.google.com/url?sa=E&q=https%3A%2F%2Fdanielsieger.com%2Fblog%2F2024%2F08%2F03%2Fcode-coverage-with-cmake.html)
+
 ## License
 
 `evo-crypter` is licensed under the MIT License. See the `LICENSE` file for more details.
