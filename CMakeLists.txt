@@ -98,8 +98,15 @@ target_include_directories(file_input_processing_tests PRIVATE ${CMAKE_SOURCE_DI
 target_compile_options(file_input_processing_tests PRIVATE -fno-builtin)
 target_link_options(file_input_processing_tests PRIVATE -Wl,--wrap=apply_mutations_to_chunk)
 
+# Add unit tests for file/mod.c
+add_executable(file_mod_tests src/file/mod.unit.c)
+target_link_libraries(file_mod_tests cmocka ${CMAKE_DL_LIBS} evo_lib)
+target_include_directories(file_mod_tests PRIVATE ${CMAKE_SOURCE_DIR}/src)
+target_compile_options(file_mod_tests PRIVATE -fno-builtin)
+target_link_options(file_mod_tests PRIVATE -Wl,--wrap=process_input_single_thread -Wl,--wrap=process_input_multi_thread)
+
 # Add the test targets to the default build
-add_custom_target(tests DEPENDS config_tests file_tests mutations_tests config_cli_tests config_mod_tests file_input_processing_tests)
+add_custom_target(tests DEPENDS config_tests file_tests mutations_tests config_cli_tests config_mod_tests file_input_processing_tests file_mod_tests)
 
 # Add commands to run the tests
 add_test(NAME config_tests COMMAND config_tests)
@@ -108,6 +115,7 @@ add_test(NAME mutations_tests COMMAND mutations_tests)
 add_test(NAME config_cli_tests COMMAND config_cli_tests)
 add_test(NAME config_mod_tests COMMAND config_mod_tests)
 add_test(NAME file_input_processing_tests COMMAND file_input_processing_tests)
+add_test(NAME file_mod_tests COMMAND file_mod_tests)
 
 # --- Code Coverage Setup ---
 # Check if a coverage build is requested
@@ -138,4 +146,6 @@ if(CMAKE_BUILD_TYPE MATCHES "Debug")
     target_link_options(config_cli_tests PRIVATE --coverage)
     target_compile_options(file_input_processing_tests PRIVATE -g --coverage)
     target_link_options(file_input_processing_tests PRIVATE --coverage)
+		target_compile_options(file_mod_tests PRIVATE -g --coverage)
+    target_link_options(file_mod_tests PRIVATE --coverage)
 endif()
