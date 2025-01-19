@@ -60,13 +60,13 @@ static void test_fn_2_down_one_char(void** state) {
 
 static void test_fn_2_up_newline(void** state) {
   char str[] = "abc\nxyz";
-  char expected[] = "xyz\ncba";
+  char expected[] = "zyx\ncba";
   fn_2_up(str);
   assert_string_equal(expected, str);
 }
 
 static void test_fn_2_down_newline(void** state) {
-  char str[] = "xyz\ncba";
+  char str[] = "zyx\ncba";
   char expected[] = "abc\nxyz";
   fn_2_down(str);
   assert_string_equal(expected, str);
@@ -82,13 +82,13 @@ static void test_fn_2_up_down_combined(void** state) {
 
 static void test_fn_2_up_with_symbols(void** state) {
   char str[] = "Hello World! 123 #$%";
-  char expected[] = "$%# 321 !dlroW olleH";
+  char expected[] = "%$# 321 !dlroW olleH";
   fn_2_up(str);
   assert_string_equal(expected, str);
 }
 
 static void test_fn_2_down_with_symbols(void** state) {
-  char str[] = "$%# 321 !dlroW olleH";
+  char str[] = "%$# 321 !dlroW olleH";
   char expected[] = "Hello World! 123 #$%";
   fn_2_down(str);
   assert_string_equal(expected, str);
