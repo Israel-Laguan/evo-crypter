@@ -11,13 +11,13 @@ void fn_3_down(char* str);
 
 static void test_fn_3_up_basic(void** state) {
   char str[] = "helloworld";
-  char expected[] = "aopzlttohk";
+  char expected[] = "cmrpbafvgl";
   fn_3_up(str);
   assert_string_equal(expected, str);
 }
 
 static void test_fn_3_down_basic(void** state) {
-  char str[] = "aopzlttohk";
+  char str[] = "cmrpbafvgl";
   char expected[] = "helloworld";
   fn_3_down(str);
   assert_string_equal(expected, str);
@@ -63,13 +63,13 @@ static void test_fn_3_down_non_alpha(void** state) {
 
 static void test_fn_3_up_mixed_case(void** state) {
   char str[] = "HelloWorld";
-  char expected[] = "AopzLttohk";
+  char expected[] = "CmrpbAfvgl";
   fn_3_up(str);
   assert_string_equal(expected, str);
 }
 
 static void test_fn_3_down_mixed_case(void** state) {
-  char str[] = "AopzLttohk";
+  char str[] = "CmrpbAfvgl";
   char expected[] = "HelloWorld";
   fn_3_down(str);
   assert_string_equal(expected, str);
@@ -77,13 +77,13 @@ static void test_fn_3_down_mixed_case(void** state) {
 
 static void test_fn_3_up_with_spaces(void** state) {
   char str[] = "hello world";
-  char expected[] = "aopzl ttohk";
+  char expected[] = "cmrpb afvgl";
   fn_3_up(str);
   assert_string_equal(expected, str);
 }
 
 static void test_fn_3_down_with_spaces(void** state) {
-  char str[] = "aopzl ttohk";
+  char str[] = "cmrpb afvgl";
   char expected[] = "hello world";
   fn_3_down(str);
   assert_string_equal(expected, str);
