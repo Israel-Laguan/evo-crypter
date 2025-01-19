@@ -9,14 +9,37 @@
 #include <string.h> // strncpy
 
 // Helper function to create argv
-static char** create_argv(int argc, ...) {
-  char** argv = malloc(argc * sizeof(char*));
-  va_list args;
-  va_start(args, argc);
-  for (int i = 0; i < argc; i++) {
-    argv[i] = strdup(va_arg(args, const char*));
+static char** create_test_argv(int argc, const char* args[]) {
+  if (argc <= 0 || args == NULL) {
+    return NULL;
   }
-  va_end(args);
+
+  char** argv = malloc(argc * sizeof(char*));
+  if (argv == NULL) {
+    return NULL;
+  }
+
+  for (int i = 0; i < argc; i++) {
+    if (args[i] == NULL) {
+      // Clean up on NULL argument
+      for (int j = 0; j < i; j++) {
+	free(argv[j]);
+      }
+      free(argv);
+      return NULL;
+    }
+
+    argv[i] = strdup(args[i]);
+    if (argv[i] == NULL) {
+      // Clean up on allocation failure
+      for (int j = 0; j < i; j++) {
+	free(argv[j]);
+      }
+      free(argv);
+      return NULL;
+    }
+  }
+
   return argv;
 }
 
@@ -31,8 +54,9 @@ static void free_argv(int argc, char** argv) {
 
 static void test_initialize_config_valid(void** state) {
   int argc = 7;
-  char** argv =
-      create_argv(argc, "./evo", "-i", "input.txt", "-t", "4", "-g", "1,2,3");
+  const char* args[] = {"./evo", "-i", "input.txt", "-t", "4", "-g", "1,2,3"};
+
+  char** argv = create_test_argv(argc, args);
   Config config = initialize_config(argc, argv);
 
   assert_false(config.error);
@@ -47,7 +71,9 @@ static void test_initialize_config_valid(void** state) {
 
 static void test_initialize_config_no_input(void** state) {
   int argc = 1;
-  char** argv = create_argv(argc, "./evo");
+  const char* args[] = {"./evo"};
+
+  char** argv = create_test_argv(argc, args);
   Config config = initialize_config(argc, argv);
 
   assert_true(
@@ -59,7 +85,9 @@ static void test_initialize_config_no_input(void** state) {
 
 static void test_initialize_config_default_generations(void** state) {
   int argc = 3;
-  char** argv = create_argv(argc, "./evo", "-i", "input.txt");
+  const char* args[] = {"./evo", "-i", "input.txt"};
+
+  char** argv = create_test_argv(argc, args);
   Config config = initialize_config(argc, argv);
 
   assert_false(config.error);
@@ -71,7 +99,9 @@ static void test_initialize_config_default_generations(void** state) {
 
 static void test_initialize_config_invalid_generations(void** state) {
   int argc = 5;
-  char** argv = create_argv(argc, "./evo", "-i", "input.txt", "-g", "1,2,!,");
+  const char* args[] = {"./evo", "-i", "input.txt", "-g", "1,2,!,"};
+
+  char** argv = create_test_argv(argc, args);
   Config config = initialize_config(argc, argv);
 
   assert_true(config.error);
@@ -82,7 +112,9 @@ static void test_initialize_config_invalid_generations(void** state) {
 
 static void test_initialize_config_uppercase_generations(void** state) {
   int argc = 5;
-  char** argv = create_argv(argc, "./evo", "-i", "input.txt", "-g", "1,A,2,B");
+  const char* args[] = {"./evo", "-i", "input.txt", "-g", "1,A,2,B"};
+
+  char** argv = create_test_argv(argc, args);
   Config config = initialize_config(argc, argv);
 
   assert_false(config.error);

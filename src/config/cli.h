@@ -8,7 +8,7 @@
 
 #include "mod.h"
 #include <setjmp.h>
-#include <stdarg.h>
+#include <stdarg.h> // va_list, va_start, va_end
 #include <stddef.h> // size_t for snprintf, strncpy
 #include <stddef.h>
 

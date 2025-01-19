@@ -10,9 +10,9 @@
 #include <unistd.h>
 
 // Mock version of process_input_single_thread
-void __wrap_process_input_single_thread(const char* input_file,
-					const char* output_file,
-					const char* generations, bool decrypt) {
+void __wrap_process_input_single_thread( // NOLINT(readability-identifier-naming)
+    const char* input_file, const char* output_file, const char* generations,
+    bool decrypt) {
   check_expected(input_file);
   check_expected(output_file);
   check_expected(generations);
@@ -23,10 +23,9 @@ void __wrap_process_input_single_thread(const char* input_file,
 }
 
 // Mock version of process_input_multi_thread
-void __wrap_process_input_multi_thread(const char* input_file,
-				       const char* output_file,
-				       const char* generations, bool decrypt,
-				       int threads) {
+void __wrap_process_input_multi_thread( // NOLINT(readability-identifier-naming)
+    const char* input_file, const char* output_file, const char* generations,
+    bool decrypt, int threads) {
   check_expected(input_file);
   check_expected(output_file);
   check_expected(generations);

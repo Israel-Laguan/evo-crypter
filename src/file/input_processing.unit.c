@@ -8,8 +8,8 @@
 #include <unistd.h>
 
 // Mock version of apply_mutations_to_chunk
-void* __wrap_apply_mutations_to_chunk(void* arg, const char* generations,
-				      bool decrypt) {
+void* __wrap_apply_mutations_to_chunk( // NOLINT(readability-identifier-naming)
+    void* arg, const char* generations, bool decrypt) {
   // Simulate mutation by reversing the string, excluding the newline character,
   // if present
   ChunkProcessingArgs* args = (ChunkProcessingArgs*)arg;

@@ -7,17 +7,20 @@
 
 // Mock functions for apply_mutation_up, apply_mutation_down, and
 // reverse_generations
-void __wrap_apply_mutation_up(char symbol, char* str) {
+void __wrap_apply_mutation_up( // NOLINT(readability-identifier-naming)
+    char symbol, char* str) {
   check_expected(symbol);
   check_expected(str);
 }
 
-void __wrap_apply_mutation_down(char symbol, char* str) {
+void __wrap_apply_mutation_down( // NOLINT(readability-identifier-naming)
+    char symbol, char* str) {
   check_expected(symbol);
   check_expected(str);
 }
 
-void __wrap_reverse_generations(char* generations) {
+void __wrap_reverse_generations( // NOLINT(readability-identifier-naming)
+    char* generations) {
   check_expected(generations);
 }
 
