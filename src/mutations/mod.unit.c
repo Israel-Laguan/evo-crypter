@@ -7,12 +7,14 @@
 
 // Mock functions for apply_mutation_up, apply_mutation_down, and
 // reverse_generations
+// cppcheck-suppress unusedFunction
 void __wrap_apply_mutation_up( // NOLINT(readability-identifier-naming)
     char symbol, char* str) {
   check_expected(symbol);
   check_expected(str);
 }
 
+// cppcheck-suppress unusedFunction
 void __wrap_apply_mutation_down( // NOLINT(readability-identifier-naming)
     char symbol, char* str) {
   check_expected(symbol);

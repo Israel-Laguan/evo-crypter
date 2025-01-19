@@ -2,9 +2,6 @@
 #include "cli.h"
 #include "utils.h"
 #include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 Config initialize_config(int argc, char* argv[]) {
   Config config = parse_command_line_args(argc, argv);

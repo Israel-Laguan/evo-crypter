@@ -88,7 +88,7 @@ static void test_evolve_file_multi_thread(void** state) {
 static void test_evolve_file_file_not_found(void** state) {
   // Redirect stderr to suppress error message during test
   int stderr_copy = dup(STDERR_FILENO);
-  freopen("/dev/null", "w", stderr);
+  freopen("/dev/null", "w", stderr); // cppcheck-suppress ignoredReturnValue
 
   // Call the function and check the exit code in a child process
   pid_t pid = fork();

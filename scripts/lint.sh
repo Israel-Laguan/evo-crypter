@@ -10,7 +10,7 @@ fi
 
 # Run cppcheck
 echo "Running cppcheck..."
-cppcheck --enable=all --inconclusive --suppress=missingIncludeSystem src
+cppcheck --enable=all --inconclusive --suppress=missingIncludeSystem --inline-suppr src
 
 # Check for cppcheck errors
 if [ $? -ne 0 ]; then

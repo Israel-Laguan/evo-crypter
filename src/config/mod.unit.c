@@ -4,9 +4,6 @@
 #include <setjmp.h>
 #include <stdarg.h>
 #include <stddef.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h> // strncpy
 
 // Helper function to create argv
 static char** create_test_argv(int argc, const char* args[]) {

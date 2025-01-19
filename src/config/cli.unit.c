@@ -1,8 +1,5 @@
 #include "cli.h"
 #include <cmocka.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h> // strdup
 
 // Helper function to simulate command-line arguments
 static char** create_test_argv(int argc, const char* args[]) {
