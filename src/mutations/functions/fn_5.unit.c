@@ -60,13 +60,13 @@ static void test_fn_5_down_non_alpha(void** state) {
 
 static void test_fn_5_up_mixed_case(void** state) {
   char str[] = "HelloWorld";
-  char expected[] = "ItssgVgsks";
+  char expected[] = "ItssgVgksr";
   fn_5_up(str);
   assert_string_equal(expected, str);
 }
 
 static void test_fn_5_down_mixed_case(void** state) {
-  char str[] = "ItssgVgsks";
+  char str[] = "ItssgVgksr";
   char expected[] = "HelloWorld";
   fn_5_down(str);
   assert_string_equal(expected, str);

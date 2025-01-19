@@ -101,7 +101,6 @@ static void test_fn_3_up_down_combined(void** state) {
 
 static void test_fn_3_up_empty_key(void** state) {
   // Temporarily set the key to an empty string
-  extern char vigenere_key[];
   char original_key[strlen(vigenere_key) + 1];
   strncpy(original_key, vigenere_key, sizeof(original_key));
   original_key[sizeof(original_key) - 1] = '\0';
@@ -118,7 +117,6 @@ static void test_fn_3_up_empty_key(void** state) {
 
 static void test_fn_3_down_empty_key(void** state) {
   // Temporarily set the key to an empty string
-  extern char vigenere_key[];
   char original_key[strlen(vigenere_key) + 1];
   strncpy(original_key, vigenere_key, sizeof(original_key));
   original_key[sizeof(original_key) - 1] = '\0';

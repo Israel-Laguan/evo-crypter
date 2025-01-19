@@ -1,6 +1,7 @@
 #include "../mod.h"
 #include <ctype.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 // Dictionary Move (shift by 5, using a small example dictionary)
@@ -15,8 +16,15 @@ void fn_asterisk_up(char* str) {
   size_t len = strlen(str);
   if (len == 0)
     return;
-  char result[len + 1];
+
+  // Allocate a larger buffer to handle potential expansion.
+  char* result = malloc(len * 2 + 1);
+  if (result == NULL) {
+    perror("Memory allocation failed");
+    exit(1);
+  }
   result[0] = '\0';
+
   char* saveptr;
   char* word = strtok_r(str, " ", &saveptr);
   size_t result_len = 0;
@@ -25,15 +33,15 @@ void fn_asterisk_up(char* str) {
     int i;
     for (i = 0; i < DICT_SIZE; i++) {
       if (strcasecmp(word, dictionary[i]) == 0) { // Case-insensitive comparison
-	result_len += snprintf(result + result_len, sizeof(result) - result_len,
+	result_len += snprintf(result + result_len, len * 2 + 1 - result_len,
 			       "%s ", dictionary[(i + 5) % DICT_SIZE]);
 	break;
       }
     }
     if (i == DICT_SIZE) {
       // Word not in dictionary so we add it as is
-      result_len += snprintf(result + result_len, sizeof(result) - result_len,
-			     "%s ", word);
+      result_len +=
+	  snprintf(result + result_len, len * 2 + 1 - result_len, "%s ", word);
     }
     word = strtok_r(NULL, " ", &saveptr);
   }
@@ -41,7 +49,17 @@ void fn_asterisk_up(char* str) {
   if (result_len > 0 && result[result_len - 1] == ' ') {
     result[result_len - 1] = '\0';
   }
-  strncpy(str, result, len + 1);
+
+  // Ensure null-termination and copy back to original string
+  if (result_len < len * 2 + 1) {
+    result[result_len] = '\0';
+  } else {
+    result[len * 2] = '\0';
+  }
+
+  strncpy(str, result, result_len + 1);
+  str[result_len] = '\0';
+  free(result); // Free the dynamically allocated memory
 }
 
 void fn_asterisk_down(char* str) {
@@ -50,7 +68,11 @@ void fn_asterisk_down(char* str) {
   size_t len = strlen(str);
   if (len == 0)
     return;
-  char result[len + 1];
+  char* result = malloc(len * 2 + 1);
+  if (result == NULL) {
+    perror("Memory allocation failed");
+    exit(1);
+  }
   result[0] = '\0';
   char* saveptr;
   char* word = strtok_r(str, " ", &saveptr);
@@ -61,15 +83,15 @@ void fn_asterisk_down(char* str) {
     for (i = 0; i < DICT_SIZE; i++) {
       if (strcasecmp(word, dictionary[i]) == 0) {
 	result_len +=
-	    snprintf(result + result_len, sizeof(result) - result_len, "%s ",
+	    snprintf(result + result_len, len * 2 + 1 - result_len, "%s ",
 		     dictionary[(i - 5 + DICT_SIZE) % DICT_SIZE]);
 	break;
       }
     }
     if (i == DICT_SIZE) {
       // Word not in dictionary
-      result_len += snprintf(result + result_len, sizeof(result) - result_len,
-			     "%s ", word);
+      result_len +=
+	  snprintf(result + result_len, len * 2 + 1 - result_len, "%s ", word);
     }
     word = strtok_r(NULL, " ", &saveptr);
   }
@@ -77,5 +99,15 @@ void fn_asterisk_down(char* str) {
   if (result_len > 0 && result[result_len - 1] == ' ') {
     result[result_len - 1] = '\0';
   }
-  strncpy(str, result, len + 1);
+
+  // Ensure null-termination and copy back to original string
+  if (result_len < len * 2 + 1) {
+    result[result_len] = '\0';
+  } else {
+    result[len * 2] = '\0';
+  }
+
+  strncpy(str, result, result_len + 1);
+  str[result_len] = '\0';
+  free(result); // Free the dynamically allocated memory
 }

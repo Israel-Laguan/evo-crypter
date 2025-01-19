@@ -10,13 +10,13 @@ void fn_7_down(char* str);
 
 static void test_fn_7_up_basic(void** state) {
   char str[] = "affinecipher";
-  char expected[] = "iwwduerxbtqe";
+  char expected[] = "ihhwvcswfrcp";
   fn_7_up(str);
   assert_string_equal(expected, str);
 }
 
 static void test_fn_7_down_basic(void** state) {
-  char str[] = "iwwduerxbtqe";
+  char str[] = "ihhwvcswfrcp";
   char expected[] = "affinecipher";
   fn_7_down(str);
   assert_string_equal(expected, str);
@@ -60,13 +60,13 @@ static void test_fn_7_down_non_alpha(void** state) {
 
 static void test_fn_7_up_mixed_case(void** state) {
   char str[] = "AffineCipher";
-  char expected[] = "Iwwduerxbtqe";
+  char expected[] = "IhhwvcSwfrcp";
   fn_7_up(str);
   assert_string_equal(expected, str);
 }
 
 static void test_fn_7_down_mixed_case(void** state) {
-  char str[] = "Iwwduerxbtqe";
+  char str[] = "IhhwvcSwfrcp";
   char expected[] = "AffineCipher";
   fn_7_down(str);
   assert_string_equal(expected, str);

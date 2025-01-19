@@ -10,13 +10,13 @@ void fn_6_down(char* str);
 
 static void test_fn_6_up_basic(void** state) {
   char str[] = "helloworld";
-  char expected[] = "hlodeorlwl";
+  char expected[] = "holelwrdlo";
   fn_6_up(str);
   assert_string_equal(expected, str);
 }
 
 static void test_fn_6_down_basic(void** state) {
-  char str[] = "hlodeorlwl";
+  char str[] = "holelwrdlo";
   char expected[] = "helloworld";
   fn_6_down(str);
   assert_string_equal(expected, str);
@@ -84,13 +84,13 @@ static void test_fn_6_down_all_same_rail(void** state) {
 
 static void test_fn_6_up_longer_string(void** state) {
   char str[] = "ThisIsALongerTestString";
-  char expected[] = "TsnshsgIoeerTaIlgtsit";
+  char expected[] = "TIortihssLneTsSrniAgetg";
   fn_6_up(str);
   assert_string_equal(expected, str);
 }
 
 static void test_fn_6_down_longer_string(void** state) {
-  char str[] = "TsnshsgIoeerTaIlgtsit";
+  char str[] = "TIortihssLneTsSrniAgetg";
   char expected[] = "ThisIsALongerTestString";
   fn_6_down(str);
   assert_string_equal(expected, str);

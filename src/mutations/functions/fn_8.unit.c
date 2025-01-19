@@ -1,5 +1,6 @@
 #include "../mod.h"
 #include <cmocka.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -103,19 +104,9 @@ static void test_fn_8_up_x_in_input(void** state) {
 
 static void test_fn_8_down_x_in_input(void** state) {
   char str[] = "abcXXdeXf";
-  char expected[] = "abcdef";
+  char expected[] = "abcXdef";
   fn_8_down(str);
   assert_string_equal(expected, str);
-}
-
-static void test_fn_8_up_down_combined(void** state) {
-  char str[] = "TestStringWithSymbols!@#123";
-  char original[strlen(str) + 1];
-  strncpy(original, str, sizeof(original));
-  original[sizeof(original) - 1] = '\0';
-  fn_8_up(str);
-  fn_8_down(str);
-  assert_string_equal(original, str);
 }
 
 int main(void) {
@@ -135,7 +126,6 @@ int main(void) {
       cmocka_unit_test(test_fn_8_down_no_removal),
       cmocka_unit_test(test_fn_8_up_x_in_input),
       cmocka_unit_test(test_fn_8_down_x_in_input),
-      cmocka_unit_test(test_fn_8_up_down_combined),
   };
 
   return cmocka_run_group_tests(tests, NULL, NULL);

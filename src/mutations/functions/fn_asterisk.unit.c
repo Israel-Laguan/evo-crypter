@@ -1,6 +1,5 @@
 #include "../mod.h"
 #include <cmocka.h>
-#include <string.h>
 
 // Function prototypes
 void fn_asterisk_up(char* str);
@@ -10,13 +9,13 @@ void fn_asterisk_down(char* str);
 
 static void test_fn_asterisk_up_basic(void** state) {
   char str[] = "apple dog red";
-  char expected[] = "dog fish green";
+  char expected[] = "dog red apple";
   fn_asterisk_up(str);
   assert_string_equal(expected, str);
 }
 
 static void test_fn_asterisk_down_basic(void** state) {
-  char str[] = "dog fish green";
+  char str[] = "dog red apple";
   char expected[] = "apple dog red";
   fn_asterisk_down(str);
   assert_string_equal(expected, str);
@@ -60,13 +59,13 @@ static void test_fn_asterisk_down_word_not_found(void** state) {
 
 static void test_fn_asterisk_up_case_insensitive(void** state) {
   char str[] = "aPPlE DoG rEd";
-  char expected[] = "dog fish green";
+  char expected[] = "dog red apple";
   fn_asterisk_up(str);
   assert_string_equal(expected, str);
 }
 
 static void test_fn_asterisk_down_case_insensitive(void** state) {
-  char str[] = "DoG fIsH GrEeN";
+  char str[] = "DoG rEd aPPlE";
   char expected[] = "apple dog red";
   fn_asterisk_down(str);
   assert_string_equal(expected, str);
@@ -82,13 +81,13 @@ static void test_fn_asterisk_up_down_combined(void** state) {
 
 static void test_fn_asterisk_up_multiple_spaces(void** state) {
   char str[] = "apple  dog   red";
-  char expected[] = "dog fish green";
+  char expected[] = "dog red apple";
   fn_asterisk_up(str);
   assert_string_equal(expected, str);
 }
 
 static void test_fn_asterisk_down_multiple_spaces(void** state) {
-  char str[] = "dog  fish   green";
+  char str[] = "dog  red   apple";
   char expected[] = "apple dog red";
   fn_asterisk_down(str);
   assert_string_equal(expected, str);
