@@ -1,8 +1,12 @@
 #include "../mod.h"
 #include <ctype.h>
+#include <string.h>
 
 // Reverse String
 void fn_2_up(char* str) {
+  if (str == NULL) {
+    return;
+  }
   int start = 0;
   int end = 0;
 
@@ -22,4 +26,9 @@ void fn_2_up(char* str) {
   }
 }
 
-void fn_2_down(char* str) { fn_2_up(str); }
+void fn_2_down(char* str) {
+  if (str == NULL) {
+    return;
+  }
+  fn_2_up(str);
+}

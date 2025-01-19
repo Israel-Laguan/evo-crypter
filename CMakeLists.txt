@@ -35,6 +35,9 @@ file(GLOB_RECURSE SOURCES
     "src/*/*.h"
     "src/*/*.c"
 )
+# Collect also all the header files in the functions directory
+file(GLOB_RECURSE FUNCTION_HEADERS "src/mutations/functions/*.h")
+list(APPEND SOURCES ${FUNCTION_HEADERS})
 list(FILTER SOURCES EXCLUDE REGEX "\\.unit\\.c$|main\\.c$")
 
 # Add a static library target for the main project's code
@@ -105,8 +108,63 @@ target_include_directories(file_mod_tests PRIVATE ${CMAKE_SOURCE_DIR}/src)
 target_compile_options(file_mod_tests PRIVATE -fno-builtin)
 target_link_options(file_mod_tests PRIVATE -Wl,--wrap=process_input_single_thread -Wl,--wrap=process_input_multi_thread)
 
+# Add unit tests for mutations/functions/fn_1.c
+add_executable(fn_1_tests src/mutations/functions/fn_1.unit.c)
+target_link_libraries(fn_1_tests cmocka ${CMAKE_DL_LIBS} evo_lib)
+target_include_directories(fn_1_tests PRIVATE ${CMAKE_SOURCE_DIR}/src)
+
+# Add unit tests for mutations/functions/fn_2.c
+add_executable(fn_2_tests src/mutations/functions/fn_2.unit.c)
+target_link_libraries(fn_2_tests cmocka ${CMAKE_DL_LIBS} evo_lib)
+target_include_directories(fn_2_tests PRIVATE ${CMAKE_SOURCE_DIR}/src)
+
+# Add unit tests for mutations/functions/fn_3.c
+add_executable(fn_3_tests src/mutations/functions/fn_3.unit.c)
+target_link_libraries(fn_3_tests cmocka ${CMAKE_DL_LIBS} evo_lib)
+target_include_directories(fn_3_tests PRIVATE ${CMAKE_SOURCE_DIR}/src)
+
+# Add unit tests for mutations/functions/fn_4.c
+add_executable(fn_4_tests src/mutations/functions/fn_4.unit.c)
+target_link_libraries(fn_4_tests cmocka ${CMAKE_DL_LIBS} evo_lib)
+target_include_directories(fn_4_tests PRIVATE ${CMAKE_SOURCE_DIR}/src)
+
+# Add unit tests for mutations/functions/fn_5.c
+add_executable(fn_5_tests src/mutations/functions/fn_5.unit.c)
+target_link_libraries(fn_5_tests cmocka ${CMAKE_DL_LIBS} evo_lib)
+target_include_directories(fn_5_tests PRIVATE ${CMAKE_SOURCE_DIR}/src)
+
+# Add unit tests for mutations/functions/fn_6.c
+add_executable(fn_6_tests src/mutations/functions/fn_6.unit.c)
+target_link_libraries(fn_6_tests cmocka ${CMAKE_DL_LIBS} evo_lib)
+target_include_directories(fn_6_tests PRIVATE ${CMAKE_SOURCE_DIR}/src)
+
+# Add unit tests for mutations/functions/fn_7.c
+add_executable(fn_7_tests src/mutations/functions/fn_7.unit.c)
+target_link_libraries(fn_7_tests cmocka ${CMAKE_DL_LIBS} evo_lib)
+target_include_directories(fn_7_tests PRIVATE ${CMAKE_SOURCE_DIR}/src)
+
+# Add unit tests for mutations/functions/fn_8.c
+add_executable(fn_8_tests src/mutations/functions/fn_8.unit.c)
+target_link_libraries(fn_8_tests cmocka ${CMAKE_DL_LIBS} evo_lib)
+target_include_directories(fn_8_tests PRIVATE ${CMAKE_SOURCE_DIR}/src)
+
+# Add unit tests for mutations/functions/fn_9.c
+add_executable(fn_9_tests src/mutations/functions/fn_9.unit.c)
+target_link_libraries(fn_9_tests cmocka ${CMAKE_DL_LIBS} evo_lib)
+target_include_directories(fn_9_tests PRIVATE ${CMAKE_SOURCE_DIR}/src)
+
+# Add unit tests for mutations/functions/fn_ampersand.c
+add_executable(fn_ampersand_tests src/mutations/functions/fn_ampersand.unit.c)
+target_link_libraries(fn_ampersand_tests cmocka ${CMAKE_DL_LIBS} evo_lib)
+target_include_directories(fn_ampersand_tests PRIVATE ${CMAKE_SOURCE_DIR}/src)
+
+# Add unit tests for mutations/functions/fn_asterisk.c
+add_executable(fn_asterisk_tests src/mutations/functions/fn_asterisk.unit.c)
+target_link_libraries(fn_asterisk_tests cmocka ${CMAKE_DL_LIBS} evo_lib)
+target_include_directories(fn_asterisk_tests PRIVATE ${CMAKE_SOURCE_DIR}/src)
+
 # Add the test targets to the default build
-add_custom_target(tests DEPENDS config_tests file_tests mutations_tests config_cli_tests config_mod_tests file_input_processing_tests file_mod_tests)
+add_custom_target(tests DEPENDS config_tests file_tests mutations_tests config_cli_tests config_mod_tests file_input_processing_tests file_mod_tests fn_1_tests fn_2_tests fn_3_tests fn_4_tests fn_5_tests fn_6_tests fn_7_tests fn_8_tests fn_9_tests fn_ampersand_tests fn_asterisk_tests)
 
 # Add commands to run the tests
 add_test(NAME config_tests COMMAND config_tests)
@@ -116,6 +174,17 @@ add_test(NAME config_cli_tests COMMAND config_cli_tests)
 add_test(NAME config_mod_tests COMMAND config_mod_tests)
 add_test(NAME file_input_processing_tests COMMAND file_input_processing_tests)
 add_test(NAME file_mod_tests COMMAND file_mod_tests)
+add_test(NAME fn_1_tests COMMAND fn_1_tests)
+add_test(NAME fn_2_tests COMMAND fn_2_tests)
+add_test(NAME fn_3_tests COMMAND fn_3_tests)
+add_test(NAME fn_4_tests COMMAND fn_4_tests)
+add_test(NAME fn_5_tests COMMAND fn_5_tests)
+add_test(NAME fn_6_tests COMMAND fn_6_tests)
+add_test(NAME fn_7_tests COMMAND fn_7_tests)
+add_test(NAME fn_8_tests COMMAND fn_8_tests)
+add_test(NAME fn_9_tests COMMAND fn_9_tests)
+add_test(NAME fn_ampersand_tests COMMAND fn_ampersand_tests)
+add_test(NAME fn_asterisk_tests COMMAND fn_asterisk_tests)
 
 # --- Code Coverage Setup ---
 # Check if a coverage build is requested
@@ -148,4 +217,26 @@ if(CMAKE_BUILD_TYPE MATCHES "Debug")
     target_link_options(file_input_processing_tests PRIVATE --coverage)
 		target_compile_options(file_mod_tests PRIVATE -g --coverage)
     target_link_options(file_mod_tests PRIVATE --coverage)
+		target_compile_options(fn_1_tests PRIVATE -g --coverage)
+    target_link_options(fn_1_tests PRIVATE --coverage)
+    target_compile_options(fn_2_tests PRIVATE -g --coverage)
+    target_link_options(fn_2_tests PRIVATE --coverage)
+    target_compile_options(fn_3_tests PRIVATE -g --coverage)
+    target_link_options(fn_3_tests PRIVATE --coverage)
+    target_compile_options(fn_4_tests PRIVATE -g --coverage)
+    target_link_options(fn_4_tests PRIVATE --coverage)
+    target_compile_options(fn_5_tests PRIVATE -g --coverage)
+    target_link_options(fn_5_tests PRIVATE --coverage)
+    target_compile_options(fn_6_tests PRIVATE -g --coverage)
+    target_link_options(fn_6_tests PRIVATE --coverage)
+    target_compile_options(fn_7_tests PRIVATE -g --coverage)
+    target_link_options(fn_7_tests PRIVATE --coverage)
+    target_compile_options(fn_8_tests PRIVATE -g --coverage)
+    target_link_options(fn_8_tests PRIVATE --coverage)
+    target_compile_options(fn_9_tests PRIVATE -g --coverage)
+    target_link_options(fn_9_tests PRIVATE --coverage)
+    target_compile_options(fn_ampersand_tests PRIVATE -g --coverage)
+    target_link_options(fn_ampersand_tests PRIVATE --coverage)
+    target_compile_options(fn_asterisk_tests PRIVATE -g --coverage)
+    target_link_options(fn_asterisk_tests PRIVATE --coverage)
 endif()
