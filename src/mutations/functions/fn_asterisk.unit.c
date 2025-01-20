@@ -61,17 +61,19 @@ static void test_fn_asterisk_down_word_not_found(void** state) {
 }
 
 static void test_fn_asterisk_up_case_insensitive(void** state) {
-  char str[] = "aPPlE DoG rEd";
+  char* str = strdup("aPPlE DoG rEd");
   char expected[] = "dog red apple";
   fn_asterisk_up(str);
   assert_string_equal(expected, str);
+  free(str);
 }
 
 static void test_fn_asterisk_down_case_insensitive(void** state) {
-  char str[] = "DoG rEd aPPlE";
+  char* str = strdup("DoG rEd aPPlE");
   char expected[] = "apple dog red";
   fn_asterisk_down(str);
   assert_string_equal(expected, str);
+  free(str);
 }
 
 static void test_fn_asterisk_up_down_combined(void** state) {
