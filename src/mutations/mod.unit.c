@@ -68,11 +68,11 @@ static void test_apply_mutations_to_chunk_null_buffer(void** state) {
 static void test_apply_mutations_to_chunk_combined(void** state) {
   char buffer[BUFFER_SIZE] = "Test String";
   char expected_buffer[BUFFER_SIZE] = "Test String";
-  ChunkProcessingArgs args_up = {buffer, "1,2,4,6,*", false};
-  ChunkProcessingArgs args_down = {buffer, "1,2,4,6,*", true};
-  expect_string(__wrap_reverse_generations, generations, "1,2,4,6,*");
-  apply_mutations_to_chunk(&args_up, "1,2,4,6,*", false);
-  apply_mutations_to_chunk(&args_down, "1,2,4,6,*", true);
+  ChunkProcessingArgs args_up = {buffer, "1,2,4,5,6,7,8,9,*,#", false};
+  ChunkProcessingArgs args_down = {buffer, "1,2,4,5,6,7,8,9,*,#", true};
+  expect_string(__wrap_reverse_generations, generations, "1,2,4,5,6,7,8,9,*,#");
+  apply_mutations_to_chunk(&args_up, "1,2,4,5,6,7,8,9,*,#", false);
+  apply_mutations_to_chunk(&args_down, "1,2,4,5,6,7,8,9,*,#", true);
   assert_string_equal(expected_buffer, buffer);
 }
 

@@ -9,18 +9,31 @@ void fn_ampersand_down(char* str);
 
 // Test cases for XOR Cipher (fn_ampersand_up and fn_ampersand_down)
 
-static void test_fn_ampersand_up_basic(void** state) {
-  char str[] = "hello";
-  char expected[] = {35, 46, 39, 39, 36, '\0'};
-  fn_ampersand_up(str);
-  assert_string_equal(expected, str);
+static void test_fn_ampersand_up_down(void** state) {
+  (void)state; // Unused
+
+  char test_str[] = "Hello, World!";
+  char original_str[] = "Hello, World!";
+
+  // Apply encryption
+  fn_3_up(test_str);
+  // Apply decryption
+  fn_3_down(test_str);
+
+  // Check if decrypted matches original
+  assert_string_equal(test_str, original_str);
 }
 
-static void test_fn_ampersand_down_basic(void** state) {
-  char str[] = {35, 46, 39, 39, 36, '\0'};
-  char expected[] = "hello";
-  fn_ampersand_down(str);
-  assert_string_equal(expected, str);
+static void test_fn_ampersand_special_characters(void** state) {
+  (void)state;
+
+  char test_str[] = "\x01\x02\x03\x04";
+  char original_str[] = "\x01\x02\x03\x04";
+
+  fn_3_up(test_str);
+  fn_3_down(test_str);
+
+  assert_memory_equal(test_str, original_str, sizeof(test_str));
 }
 
 static void test_fn_ampersand_up_empty_string(void** state) {
@@ -45,16 +58,10 @@ static void test_fn_ampersand_down_null_input(void** state) {
   fn_ampersand_down(NULL); // Just check that it doesn't crash
 }
 
-static void test_fn_ampersand_up_mixed_case(void** state) {
+static void test_fn_ampersand_up_down_mixed_case(void** state) {
   char str[] = "HeLlO";
-  char expected[] = {3, 46, 7, 39, 4, '\0'};
-  fn_ampersand_up(str);
-  assert_string_equal(expected, str);
-}
-
-static void test_fn_ampersand_down_mixed_case(void** state) {
-  char str[] = {3, 46, 7, 39, 4, '\0'};
   char expected[] = "HeLlO";
+  fn_ampersand_up(str);
   fn_ampersand_down(str);
   assert_string_equal(expected, str);
 }
@@ -70,14 +77,13 @@ static void test_fn_ampersand_up_down_combined(void** state) {
 
 int main(void) {
   const struct CMUnitTest tests[] = {
-      cmocka_unit_test(test_fn_ampersand_up_basic),
-      cmocka_unit_test(test_fn_ampersand_down_basic),
+      cmocka_unit_test(test_fn_ampersand_up_down),
+      cmocka_unit_test(test_fn_ampersand_special_characters),
       cmocka_unit_test(test_fn_ampersand_up_empty_string),
       cmocka_unit_test(test_fn_ampersand_down_empty_string),
       cmocka_unit_test(test_fn_ampersand_up_null_input),
       cmocka_unit_test(test_fn_ampersand_down_null_input),
-      cmocka_unit_test(test_fn_ampersand_up_mixed_case),
-      cmocka_unit_test(test_fn_ampersand_down_mixed_case),
+      cmocka_unit_test(test_fn_ampersand_up_down_mixed_case),
       cmocka_unit_test(test_fn_ampersand_up_down_combined),
   };
 

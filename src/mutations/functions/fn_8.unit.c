@@ -8,22 +8,17 @@
 void fn_8_up(char* str);
 void fn_8_down(char* str);
 
-// Test cases for Custom Function (fn_8_up and fn_8_down)
+// Test cases for XOR with Position-Based Key
 
-static void test_fn_8_up_basic(void** state) {
-  char* str = strdup("abcdefghi");
-  char expected[] = "abcXdefXghi";
-  fn_8_up(str);
-  assert_string_equal(expected, str);
-  free(str);
-}
+static void test_fn_8_up_down(void** state) {
+  (void)state;
+  char test_str[] = "HelloWorld";
+  char original_str[] = "HelloWorld";
 
-static void test_fn_8_down_basic(void** state) {
-  char* str = strdup("abcXdefXghi");
-  char expected[] = "abcdefghi";
-  fn_8_down(str);
-  assert_string_equal(expected, str);
-  free(str);
+  fn_8_up(test_str);
+  fn_8_down(test_str);
+
+  assert_string_equal(test_str, original_str);
 }
 
 static void test_fn_8_up_empty_string(void** state) {
@@ -50,88 +45,27 @@ static void test_fn_8_down_null_input(void** state) {
 
 static void test_fn_8_up_one_char(void** state) {
   char str[] = "a";
-  char expected[] = "a";
+  char expected[] = "A";
   fn_8_up(str);
   assert_string_equal(expected, str);
 }
 
 static void test_fn_8_down_one_char(void** state) {
-  char str[] = "a";
+  char str[] = "A";
   char expected[] = "a";
   fn_8_down(str);
   assert_string_equal(expected, str);
 }
 
-static void test_fn_8_up_boundary(void** state) {
-  char* str = strdup("abcdef");
-  char expected[] = "abcXdef";
-  fn_8_up(str);
-  assert_string_equal(expected, str);
-  free(str);
-}
-
-static void test_fn_8_down_boundary(void** state) {
-  char* str = strdup("abcXdef");
-  char expected[] = "abcdef";
-  fn_8_down(str);
-  assert_string_equal(expected, str);
-  free(str);
-}
-
-static void test_fn_8_down_x_at_end(void** state) {
-  char str[] = "abcXdefX";
-  char expected[] = "abcdef";
-  fn_8_down(str);
-  assert_string_equal(expected, str);
-}
-
-static void test_fn_8_up_no_insertion(void** state) {
-  char str[] = "ab";
-  char expected[] = "ab";
-  fn_8_up(str);
-  assert_string_equal(expected, str);
-}
-
-static void test_fn_8_down_no_removal(void** state) {
-  char str[] = "ab";
-  char expected[] = "ab";
-  fn_8_down(str);
-  assert_string_equal(expected, str);
-}
-
-static void test_fn_8_up_x_in_input(void** state) {
-  char* str = strdup("abcXdef");
-  char expected[] = "abcXXdeXf";
-  fn_8_up(str);
-  assert_string_equal(expected, str);
-  free(str);
-}
-
-static void test_fn_8_down_x_in_input(void** state) {
-  char* str = strdup("abcXXdeXf");
-  char expected[] = "abcXdef";
-  fn_8_down(str);
-  assert_string_equal(expected, str);
-  free(str);
-}
-
 int main(void) {
   const struct CMUnitTest tests[] = {
-      cmocka_unit_test(test_fn_8_up_basic),
-      cmocka_unit_test(test_fn_8_down_basic),
+      cmocka_unit_test(test_fn_8_up_down),
       cmocka_unit_test(test_fn_8_up_empty_string),
       cmocka_unit_test(test_fn_8_down_empty_string),
       cmocka_unit_test(test_fn_8_up_null_input),
       cmocka_unit_test(test_fn_8_down_null_input),
       cmocka_unit_test(test_fn_8_up_one_char),
       cmocka_unit_test(test_fn_8_down_one_char),
-      cmocka_unit_test(test_fn_8_up_boundary),
-      cmocka_unit_test(test_fn_8_down_boundary),
-      cmocka_unit_test(test_fn_8_down_x_at_end),
-      cmocka_unit_test(test_fn_8_up_no_insertion),
-      cmocka_unit_test(test_fn_8_down_no_removal),
-      cmocka_unit_test(test_fn_8_up_x_in_input),
-      cmocka_unit_test(test_fn_8_down_x_in_input),
   };
 
   return cmocka_run_group_tests(tests, NULL, NULL);

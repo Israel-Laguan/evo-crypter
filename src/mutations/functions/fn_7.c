@@ -1,14 +1,16 @@
 #include "../mod.h"
 #include <ctype.h>
 
-// Affine Cipher (with a=5, b=8)
+// Caesar Cipher with alternating shift
 void fn_7_up(char* str) {
   if (str == NULL)
     return;
-  for (int i = 0; str[i] != '\0'; i++) {
-    if (isalpha(str[i])) {
-      char base = isupper(str[i]) ? 'A' : 'a';
-      str[i] = (5 * (str[i] - base) + 8) % 26 + base;
+  int shift = 3;
+  for (size_t i = 0; str[i] != '\0'; i++) {
+    if (isupper(str[i])) {
+      str[i] = ((str[i] - 'A' + (i % 2 == 0 ? shift : -shift) + 26) % 26) + 'A';
+    } else if (islower(str[i])) {
+      str[i] = ((str[i] - 'a' + (i % 2 == 0 ? shift : -shift) + 26) % 26) + 'a';
     }
   }
 }
@@ -16,12 +18,12 @@ void fn_7_up(char* str) {
 void fn_7_down(char* str) {
   if (str == NULL)
     return;
-  // Modular inverse of 5 (mod 26) is 21
-  for (int i = 0; str[i] != '\0'; i++) {
-    if (isalpha(str[i])) {
-      char base = isupper(str[i]) ? 'A' : 'a';
-      str[i] = (21 * (str[i] - base - 8 + 26)) % 26 +
-	       base; // +26 for positive modulo
+  int shift = 3;
+  for (size_t i = 0; str[i] != '\0'; i++) {
+    if (isupper(str[i])) {
+      str[i] = ((str[i] - 'A' - (i % 2 == 0 ? shift : -shift) + 26) % 26) + 'A';
+    } else if (islower(str[i])) {
+      str[i] = ((str[i] - 'a' - (i % 2 == 0 ? shift : -shift) + 26) % 26) + 'a';
     }
   }
 }
