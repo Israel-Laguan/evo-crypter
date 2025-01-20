@@ -1,5 +1,6 @@
 #include "../mod.h"
 #include <cmocka.h>
+#include <stdlib.h>
 
 // Function prototypes
 void fn_asterisk_up(char* str);
@@ -8,17 +9,19 @@ void fn_asterisk_down(char* str);
 // Test cases for Dictionary Move (fn_asterisk_up and fn_asterisk_down)
 
 static void test_fn_asterisk_up_basic(void** state) {
-  char str[] = "apple dog red";
+  char* str = strdup("apple dog red");
   char expected[] = "dog red apple";
   fn_asterisk_up(str);
   assert_string_equal(expected, str);
+  free(str);
 }
 
 static void test_fn_asterisk_down_basic(void** state) {
-  char str[] = "dog red apple";
+  char* str = strdup("dog red apple");
   char expected[] = "apple dog red";
   fn_asterisk_down(str);
   assert_string_equal(expected, str);
+  free(str);
 }
 
 static void test_fn_asterisk_up_empty_string(void** state) {
