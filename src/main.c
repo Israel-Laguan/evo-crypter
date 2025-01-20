@@ -2,8 +2,6 @@
 #include "config/utils.h"
 #include "file/mod.h"
 #include "mutations/mod.h"
-#include <stdio.h>
-#include <stdlib.h>
 
 int main(int argc, char* argv[]) {
   Config config = initialize_config(argc, argv);

@@ -3,11 +3,6 @@
 #include "utils.h"
 #include <cmocka.h>
 #include <errno.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/wait.h>
-#include <unistd.h>
 
 // Mock version of process_input_single_thread
 void __wrap_process_input_single_thread( // NOLINT(readability-identifier-naming)

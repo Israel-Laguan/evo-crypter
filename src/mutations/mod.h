@@ -6,11 +6,9 @@
 #ifndef EVO_MUTATIONS_MOD_H
 #define EVO_MUTATIONS_MOD_H
 
-#include <setjmp.h> // dep of stdio.h
-#include <stdarg.h> // va_list for snprintf, strncpy
-#include <stdbool.h>
+#include "../file/input_processing.h"
+#include "../file/utils.h"
 #include <stddef.h> // size_t for snprintf, strncpy
-#include <string.h> // strncpy
 
 // Function declarations for all mutation functions
 void fn_1_up(char* str);

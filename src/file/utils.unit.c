@@ -1,6 +1,5 @@
 #include "utils.h"
 #include <cmocka.h>
-#include <stdlib.h>   // free
 #include <sys/stat.h> // chmod
 #include <unistd.h>   // write
 

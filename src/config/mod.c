@@ -1,7 +1,6 @@
 #include "mod.h"
 #include "cli.h"
 #include "utils.h"
-#include <ctype.h>
 
 Config initialize_config(int argc, char* argv[]) {
   Config config = parse_command_line_args(argc, argv);

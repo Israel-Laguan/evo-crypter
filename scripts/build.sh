@@ -8,6 +8,9 @@ BUILD_DIR="${1:-build}"
 # Set the build type (default: Release)
 BUILD_TYPE="${2:-Release}"
 
+# Get the number of available threads
+THREADS=$(nproc 2>/dev/null || echo 1)
+
 # Check if being run from the root directory
 if [ ! -f "src/main.c" ]; then
   echo "Error: build.sh must be run from the project root directory."
@@ -31,8 +34,8 @@ echo "Configuring CMake..."
 cmake -B "$BUILD_DIR" -S . -DCMAKE_BUILD_TYPE="$CMAKE_BUILD_TYPE"
 
 # Build the project
-echo "Building the project..."
-cmake --build "$BUILD_DIR" --config "$CMAKE_BUILD_TYPE"
+echo "Building the project on $THREADS processors..."
+cmake --build "$BUILD_DIR" --config "$CMAKE_BUILD_TYPE" -j "$THREADS"
 
 # Check if the build was successful
 if [ $? -eq 0 ]; then

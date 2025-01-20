@@ -7,13 +7,6 @@
 #define EVO_CONFIG_CLI_H
 
 #include "mod.h"
-#include <setjmp.h>
-#include <stdarg.h> // va_list, va_start, va_end
-#include <stddef.h> // size_t for snprintf, strncpy
-#include <stddef.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h> // strdup
 
 /**
  * @brief Parses command-line arguments and populates the Config struct.

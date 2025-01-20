@@ -2,10 +2,6 @@
 #include "../mutations/mod.h"
 #include "utils.h"
 #include <pthread.h>
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 #define BUFFER_SIZE 1024
 

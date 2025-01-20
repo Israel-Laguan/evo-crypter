@@ -1,11 +1,6 @@
 #include "input_processing.h"
 #include "utils.h"
 #include <cmocka.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/wait.h>
-#include <unistd.h>
 
 // Mock version of apply_mutations_to_chunk
 // cppcheck-suppress unusedFunction

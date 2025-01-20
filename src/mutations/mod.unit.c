@@ -1,6 +1,4 @@
 #include "mod.h"
-#include "../file/input_processing.h"
-#include "../file/utils.h"
 #include <cmocka.h>
 
 #define BUFFER_SIZE 1024

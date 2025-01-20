@@ -1,5 +1,4 @@
 #include "cli.h"
-#include "mod.h"
 
 /**
  * @brief Handles the input file flag (-i or --input).

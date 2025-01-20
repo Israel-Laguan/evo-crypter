@@ -1,9 +1,5 @@
 #include "mod.h"
-#include "utils.h"
 #include <cmocka.h>
-#include <setjmp.h>
-#include <stdarg.h>
-#include <stddef.h>
 
 // Helper function to create argv
 static char** create_test_argv(int argc, const char* args[]) {

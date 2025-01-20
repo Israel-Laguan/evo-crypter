@@ -6,10 +6,14 @@
 #ifndef EVO_CONFIG_MOD_H
 #define EVO_CONFIG_MOD_H
 
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h> // strncpy
+#include <ctype.h>   // isupper, tolower, isdigit
+#include <setjmp.h>  // jmp_buf
+#include <stdarg.h>  // va_list, va_start, va_end
+#include <stdbool.h> // bool
+#include <stddef.h>  // size_t for snprintf, strncpy
+#include <stdio.h>   // stderr, snprintf, fprintf, perror
+#include <stdlib.h>  // free, malloc
+#include <string.h>  // strncpy, strdup
 
 /**
  * @brief Represents the program's configuration settings.
