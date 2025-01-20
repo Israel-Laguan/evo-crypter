@@ -33,15 +33,27 @@ void fn_asterisk_up(char* str) {
     int i;
     for (i = 0; i < DICT_SIZE; i++) {
       if (strcasecmp(word, dictionary[i]) == 0) { // Case-insensitive comparison
-	result_len += snprintf(result + result_len, len * 2 + 1 - result_len,
-			       "%s ", dictionary[(i + 5) % DICT_SIZE]);
+	int n = snprintf(result + result_len, len * 2 + 1 - result_len, "%s ",
+			 dictionary[(i + 5) % DICT_SIZE]);
+	if (n < 0 || (size_t)n >= len * 2 + 1 - result_len) {
+	  fprintf(stderr, "snprintf failed or buffer too small\n");
+	  free(result);
+	  exit(1);
+	}
+	result_len += n;
 	break;
       }
     }
     if (i == DICT_SIZE) {
       // Word not in dictionary so we add it as is
-      result_len +=
+      int n =
 	  snprintf(result + result_len, len * 2 + 1 - result_len, "%s ", word);
+      if (n < 0 || (size_t)n >= len * 2 + 1 - result_len) {
+	fprintf(stderr, "snprintf failed or buffer too small\n");
+	free(result);
+	exit(1);
+      }
+      result_len += n;
     }
     word = strtok_r(NULL, " ", &saveptr);
   }
@@ -59,7 +71,7 @@ void fn_asterisk_up(char* str) {
 
   strncpy(str, result, result_len + 1);
   str[result_len] = '\0';
-  free(result); // Free the dynamically allocated memory
+  free(result);
 }
 
 void fn_asterisk_down(char* str) {
@@ -68,6 +80,7 @@ void fn_asterisk_down(char* str) {
   size_t len = strlen(str);
   if (len == 0)
     return;
+
   char* result = malloc(len * 2 + 1);
   if (result == NULL) {
     perror("Memory allocation failed");
@@ -82,16 +95,27 @@ void fn_asterisk_down(char* str) {
     int i;
     for (i = 0; i < DICT_SIZE; i++) {
       if (strcasecmp(word, dictionary[i]) == 0) {
-	result_len +=
-	    snprintf(result + result_len, len * 2 + 1 - result_len, "%s ",
-		     dictionary[(i - 5 + DICT_SIZE) % DICT_SIZE]);
+	int n = snprintf(result + result_len, len * 2 + 1 - result_len, "%s ",
+			 dictionary[(i - 5 + DICT_SIZE) % DICT_SIZE]);
+	if (n < 0 || (size_t)n >= len * 2 + 1 - result_len) {
+	  fprintf(stderr, "snprintf failed or buffer too small\n");
+	  free(result);
+	  exit(1);
+	}
+	result_len += n;
 	break;
       }
     }
     if (i == DICT_SIZE) {
       // Word not in dictionary
-      result_len +=
+      int n =
 	  snprintf(result + result_len, len * 2 + 1 - result_len, "%s ", word);
+      if (n < 0 || (size_t)n >= len * 2 + 1 - result_len) {
+	fprintf(stderr, "snprintf failed or buffer too small\n");
+	free(result);
+	exit(1);
+      }
+      result_len += n;
     }
     word = strtok_r(NULL, " ", &saveptr);
   }
@@ -109,5 +133,5 @@ void fn_asterisk_down(char* str) {
 
   strncpy(str, result, result_len + 1);
   str[result_len] = '\0';
-  free(result); // Free the dynamically allocated memory
+  free(result);
 }
