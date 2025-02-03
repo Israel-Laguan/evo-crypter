@@ -1,22 +1,17 @@
 #include <ctype.h>
-#include "../mod.h"
+#include <string.h>
 
-void fn_8_up(char *str) {
-    for (int i = 0; str[i] != '\0'; i++) {
-        if (isupper(str[i])) {
-            str[i] = ((str[i] - 'A' + 3) % 26) + 'A';
-        } else if (islower(str[i])) {
-            str[i] = ((str[i] - 'a' + 3) % 26) + 'a';
-        }
+// Invert Case Cypher
+void fn_8_up(char* str) {
+  if (str == NULL)
+    return;
+  for (size_t i = 0; str[i] != '\0'; i++) {
+    if (isupper(str[i])) {
+      str[i] = tolower(str[i]);
+    } else if (islower(str[i])) {
+      str[i] = toupper(str[i]);
     }
+  }
 }
 
-void fn_8_down(char *str) {
-    for (int i = 0; str[i] != '\0'; i++) {
-        if (isupper(str[i])) {
-            str[i] = ((str[i] - 'A' - 3 + 26) % 26) + 'A';
-        } else if (islower(str[i])) {
-            str[i] = ((str[i] - 'a' - 3 + 26) % 26) + 'a';
-        }
-    }
-}
+void fn_8_down(char* str) { fn_8_up(str); }

@@ -1,0 +1,52 @@
+name: Push Checks
+
+on:
+  push:
+    paths:
+      - '**/*.c'
+      - '**/*.h'
+    branches-ignore:
+      - main
+
+jobs:
+  lint-test-build:
+    name: Lint, Test, and Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check for existing PRs
+        id: check_pr
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const prs = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              head: `${context.repo.owner}:${context.ref.replace('refs/heads/', '')}`
+            });
+            if (prs.data.length > 0) {
+              console.log('An open PR already exists for this branch. Skipping push checks.');
+            }
+
+            core.setOutput('pr_exists', prs.data.length > 0);
+
+      - name: Checkout code
+        if: steps.pr-check.outputs.pr_exists == 'false'
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Install Dependencies
+        if: steps.pr-check.outputs.pr_exists == 'false'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libcmocka-dev clang clang-tidy clang-format cppcheck
+
+      - name: Run linter
+        if: steps.pr-check.outputs.pr_exists == 'false'
+        run: ./scripts/lint.sh
+
+      - name: Build project (Debug) and Run tests
+        if: steps.pr-check.outputs.pr_exists == 'false'
+        run: ./scripts/test.sh # implicit build before tests

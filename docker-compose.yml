@@ -1,0 +1,37 @@
+version: '3.8'
+services:
+  dev:
+    build:
+      context: .
+      target: development
+    volumes:
+      - .:/app
+    working_dir: /app
+    entrypoint: ["bash", "-c"]
+    command:
+      - |
+        ./scripts/lint.sh && ./scripts/build.sh
+  test:
+    build:
+      context: .
+      target: testing
+    volumes:
+      - .:/app
+    working_dir: /app
+    entrypoint: ["bash", "-c"]
+    command:
+      - ./scripts/test.sh
+  staging:
+    build:
+      context: .
+      target: staging
+    volumes:
+      - .:/app
+      - ./results:/app/results
+    working_dir: /app
+    entrypoint: ["/app/scripts/test_encryption.sh"]
+  production:
+    build:
+      context: .
+      target: final-production
+    entrypoint: ["/usr/bin/evo"]

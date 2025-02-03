@@ -1,8 +1,5 @@
 #include "utils.h"
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <errno.h>
 
 void reverse_generations(char* generations) {
   int len = strlen(generations);
@@ -18,6 +15,14 @@ bool file_exists(const char* filename) {
   if (file) {
     fclose(file);
     return true;
+  } else {
+    // Check if the error was specifically because the file doesn't exist
+    if (errno == ENOENT) {
+      return false; // File not found
+    }
+    // Handle other potential errors (e.g., permissions)
+    fprintf(stderr, "Error: Could not open file '%s': %s\n", filename,
+	    strerror(errno));
+    return false; // Treat other errors as file not existing for now
   }
-  return false;
 }

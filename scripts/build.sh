@@ -1,27 +1,47 @@
 #!/bin/bash
 
-# Set the build directory
-BUILD_DIR="build"
+set -e
 
-# Create the build directory if it doesn't exist
-if [ ! -d "$BUILD_DIR" ]; then
-    mkdir -p "$BUILD_DIR"
+# Set the build directory (default: build/)
+BUILD_DIR="${1:-build}"
+
+# Set the build type (default: Release)
+BUILD_TYPE="${2:-Release}"
+
+# Get the number of available threads
+THREADS=$(nproc 2>/dev/null || echo 1)
+
+# Check if being run from the root directory
+if [ ! -f "src/main.c" ]; then
+  echo "Error: build.sh must be run from the project root directory."
+  exit 1
 fi
 
-# Change to the build directory
-cd "$BUILD_DIR"
+# Clean the build directory if it exists
+if [ -d "$BUILD_DIR" ]; then
+  echo "Cleaning build directory..."
+  rm -rf "$BUILD_DIR"
+fi
 
-# Configure CMake
-cmake ..
+# Create the build directory
+mkdir -p "$BUILD_DIR"
+
+# Change to the build directory
+# cd "$BUILD_DIR"
+
+# Configure CMake (using environment variable for build type)
+echo "Configuring CMake..."
+cmake -B "$BUILD_DIR" -S . -DCMAKE_BUILD_TYPE="$CMAKE_BUILD_TYPE"
 
 # Build the project
-cmake --build .
+echo "Building the project on $THREADS processors..."
+cmake --build "$BUILD_DIR" --config "$CMAKE_BUILD_TYPE" -j "$THREADS"
 
 # Check if the build was successful
 if [ $? -eq 0 ]; then
-    echo "Build successful. Executable: $BUILD_DIR/evo"
-    exit 0
+  echo "Build successful. Executable: $BUILD_DIR/evo"
+  exit 0
 else
-    echo "Build failed."
-    exit 1
+  echo "Build failed."
+  exit 1
 fi

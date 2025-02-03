@@ -7,6 +7,8 @@
 #define EVO_INPUT_PROCESSING_H
 
 #include <stdbool.h>
+#include <sys/wait.h>
+#include <unistd.h>
 
 /**
  * @brief Structure to hold arguments for the chunk processing function.

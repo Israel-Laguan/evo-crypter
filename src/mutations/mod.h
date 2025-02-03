@@ -7,7 +7,8 @@
 #define EVO_MUTATIONS_MOD_H
 
 #include "../file/input_processing.h"
-#include <stdbool.h>
+#include "../file/utils.h"
+#include <stddef.h> // size_t for snprintf, strncpy
 
 // Function declarations for all mutation functions
 void fn_1_up(char* str);

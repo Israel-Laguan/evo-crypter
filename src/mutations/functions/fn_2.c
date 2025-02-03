@@ -1,22 +1,29 @@
 #include <ctype.h>
-#include "../mod.h"
+#include <string.h>
 
-void fn_2_up(char *str) {
-    for (int i = 0; str[i] != '\0'; i++) {
-        if (isupper(str[i])) {
-            str[i] = ((str[i] - 'A' + 3) % 26) + 'A';
-        } else if (islower(str[i])) {
-            str[i] = ((str[i] - 'a' + 3) % 26) + 'a';
-        }
+// Reverse String
+void fn_2_up(char* str) {
+  if (str == NULL) {
+    return;
+  }
+  size_t end = strlen(str);
+
+  if (end > 0) {
+    end--;
+    size_t start = 0;
+    while (start < end) {
+      char temp = str[start];
+      str[start] = str[end];
+      str[end] = temp;
+      start++;
+      end--;
     }
+  }
 }
 
-void fn_2_down(char *str) {
-    for (int i = 0; str[i] != '\0'; i++) {
-        if (isupper(str[i])) {
-            str[i] = ((str[i] - 'A' - 3 + 26) % 26) + 'A';
-        } else if (islower(str[i])) {
-            str[i] = ((str[i] - 'a' - 3 + 26) % 26) + 'a';
-        }
-    }
+void fn_2_down(char* str) {
+  if (str == NULL) {
+    return;
+  }
+  fn_2_up(str);
 }

@@ -6,7 +6,7 @@
 #ifndef EVO_CONFIG_UTILS_H
 #define EVO_CONFIG_UTILS_H
 
-#include <stdbool.h>
+#include "mod.h"
 
 /**
  * @brief Prints the program's usage information to the console.

@@ -6,8 +6,11 @@
 #ifndef EVO_FILE_UTILS_H
 #define EVO_FILE_UTILS_H
 
-#include <stdbool.h>
-#include <stdio.h>
+#include <setjmp.h>  // jmp_buf
+#include <stdbool.h> // bool
+#include <stdio.h> // fopen, stderr, fprintf, fputc, fgetc, fseek, fflush, ftell, fgets, fclose, perror
+#include <stdlib.h> // free, exit
+#include <string.h> // strlen, strncpy, strdup
 
 /**
  * @brief Reverses the order of characters in a string.

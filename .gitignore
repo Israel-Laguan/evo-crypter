@@ -60,3 +60,4 @@ encrypted
 decrypted
 functions.c
 .vscode/
+*.gcda
