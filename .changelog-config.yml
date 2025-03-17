@@ -1,0 +1,26 @@
+# .changelog-config.yml
+template: |
+  # Changelog
+
+  ## {{version}}
+
+  {{#if features}}
+  ### New Features
+  {{#each features}}
+  - {{this}}
+  {{/each}}
+  {{/if}}
+
+  {{#if fixes}}
+  ### Bug Fixes
+  {{#each fixes}}
+  - {{this}}
+  {{/each}}
+  {{/if}}
+
+  {{#if improvements}}
+  ### Improvements
+  {{#each improvements}}
+  - {{this}}
+  {{/each}}
+  {{/if}}
