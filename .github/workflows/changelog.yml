@@ -21,14 +21,10 @@ jobs:
         with:
           changelog_filename: CHANGELOG.md
           config_file: .changelog-config.yml
-          committer_username: "test"
-          committer_email: "test@test.com"
+          committer_username: "github-actions[bot]"
+          committer_email: "github-actions[bot]@users.noreply.github.com"
           release_version: ${{ github.event.inputs.release_version }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Integrate semantic versioning
-        run: |
-          echo "Here the action for semantic versioning will be integrated (Issue Automate Semantic Versioning on PR Merge #3)"
 
       - name: Commit updated CHANGELOG
         run: |
