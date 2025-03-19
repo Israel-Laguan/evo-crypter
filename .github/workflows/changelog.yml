@@ -9,6 +9,9 @@ on:
       release_version:
         description: 'Set Release Version'
         required: true
+  push:
+    branches:
+      - dev
 
 jobs:
   build:
