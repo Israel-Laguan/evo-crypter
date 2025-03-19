@@ -1,35 +1,29 @@
-name: Update CHANGELOG
+name: Changelog CI
 
 on:
-  release:
-    types: [created]
+  pull_request:
+    types: [ opened ]
+
   workflow_dispatch:
+    inputs:
+      release_version:
+        description: 'Set Release Version'
+        required: true
 
 jobs:
-  generate-changelog:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Repository Checkout
-        uses: actions/checkout@v3
-        with:
-          persist-credentials: false
+      # Checks-out your repository
+      - uses: actions/checkout@v2
 
-      - name: Generate CHANGELOG
-        id: changelog
+      - name: Run Changelog CI
         uses: saadmk11/changelog-ci@v1.1.2
         with:
           changelog_filename: CHANGELOG.md
-          config_file: .changelog-config.yml
-          committer_username: "github-actions[bot]"
-          committer_email: "github-actions[bot]@users.noreply.github.com"
+          config_file: changelog-config.yml
+          committer_username: 'github-actions[bot]'
+          committer_email: 'github-actions[bot]@users.noreply.github.com'
           release_version: ${{ github.event.inputs.release_version }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Commit updated CHANGELOG
-        run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git add CHANGELOG.md
-          git commit -m "chore: update CHANGELOG.md [skip ci]" || echo "No changes to commit"
-          git push
