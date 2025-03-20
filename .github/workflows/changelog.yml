@@ -9,6 +9,7 @@ on:
       release_version:
         description: 'Set Release Version'
         required: true
+
   push:
     branches:
       - dev
@@ -24,7 +25,7 @@ jobs:
         uses: saadmk11/changelog-ci@v1.1.2
         with:
           changelog_filename: CHANGELOG.md
-          config_file: changelog-config.yml
+          config_file: .changelog-config.yml
           committer_username: 'github-actions[bot]'
           committer_email: 'github-actions[bot]@users.noreply.github.com'
           release_version: ${{ github.event.inputs.release_version }}
