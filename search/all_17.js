@@ -1,0 +1,18 @@
+var searchData=
+[
+  ['main_0',['main',['../cli_8unit_8c.html#a840291bc02cba5474a4cb46a9b9566fe',1,'main(void):&#160;cli.unit.c'],['../fn__4_8unit_8c.html#a840291bc02cba5474a4cb46a9b9566fe',1,'main(void):&#160;fn_4.unit.c'],['../fn__3_8unit_8c.html#a840291bc02cba5474a4cb46a9b9566fe',1,'main(void):&#160;fn_3.unit.c'],['../fn__2_8unit_8c.html#a840291bc02cba5474a4cb46a9b9566fe',1,'main(void):&#160;fn_2.unit.c'],['../fn__1_8unit_8c.html#a840291bc02cba5474a4cb46a9b9566fe',1,'main(void):&#160;fn_1.unit.c'],['../main_8c.html#a0ddf1224851353fc92bfbff6f499fa97',1,'main(int argc, char *argv[]):&#160;main.c'],['../file_2utils_8unit_8c.html#a840291bc02cba5474a4cb46a9b9566fe',1,'main(void):&#160;utils.unit.c'],['../file_2mod_8unit_8c.html#a840291bc02cba5474a4cb46a9b9566fe',1,'main(void):&#160;mod.unit.c'],['../input__processing_8unit_8c.html#a840291bc02cba5474a4cb46a9b9566fe',1,'main(void):&#160;input_processing.unit.c'],['../config_2utils_8unit_8c.html#a840291bc02cba5474a4cb46a9b9566fe',1,'main(void):&#160;utils.unit.c'],['../config_2mod_8unit_8c.html#a840291bc02cba5474a4cb46a9b9566fe',1,'main(void):&#160;mod.unit.c'],['../fn__5_8unit_8c.html#a840291bc02cba5474a4cb46a9b9566fe',1,'main(void):&#160;fn_5.unit.c'],['../fn__6_8unit_8c.html#a840291bc02cba5474a4cb46a9b9566fe',1,'main(void):&#160;fn_6.unit.c'],['../fn__7_8unit_8c.html#a840291bc02cba5474a4cb46a9b9566fe',1,'main(void):&#160;fn_7.unit.c'],['../fn__8_8unit_8c.html#a840291bc02cba5474a4cb46a9b9566fe',1,'main(void):&#160;fn_8.unit.c'],['../fn__9_8unit_8c.html#a840291bc02cba5474a4cb46a9b9566fe',1,'main(void):&#160;fn_9.unit.c'],['../fn__ampersand_8unit_8c.html#a840291bc02cba5474a4cb46a9b9566fe',1,'main(void):&#160;fn_ampersand.unit.c'],['../fn__asterisk_8unit_8c.html#a840291bc02cba5474a4cb46a9b9566fe',1,'main(void):&#160;fn_asterisk.unit.c'],['../mutations_2mod_8unit_8c.html#a840291bc02cba5474a4cb46a9b9566fe',1,'main(void):&#160;mod.unit.c']]],
+  ['main_20build_20yml_20tt_1',['&lt;tt&gt;main-build.yml&lt;/tt&gt;',['../md_docs_2VERSIONING.html#autotoc_md95',1,'']]],
+  ['main_2ec_2',['main.c',['../main_8c.html',1,'']]],
+  ['manual_20version_20updates_3',['Manual Version Updates',['../md_docs_2VERSIONING.html#autotoc_md98',1,'']]],
+  ['mascot_20evo_20_3a_4',['Mascot (Evo):',['../md_docs_2PROJECT__IDENTITY.html#autotoc_md51',1,'']]],
+  ['mascot_3a_20evo_5',['2. Mascot: Evo',['../md_docs_2PROJECT__IDENTITY.html#autotoc_md38',1,'']]],
+  ['metaphors_3a_6',['Visual Metaphors:',['../md_docs_2PROJECT__IDENTITY.html#autotoc_md46',1,'']]],
+  ['mod_2ec_7',['mod.c',['../mutations_2mod_8c.html',1,'(Global Namespace)'],['../file_2mod_8c.html',1,'(Global Namespace)'],['../config_2mod_8c.html',1,'(Global Namespace)']]],
+  ['mod_2eh_8',['mod.h',['../mutations_2mod_8h.html',1,'(Global Namespace)'],['../file_2mod_8h.html',1,'(Global Namespace)'],['../config_2mod_8h.html',1,'(Global Namespace)']]],
+  ['mod_2eunit_2ec_9',['mod.unit.c',['../file_2mod_8unit_8c.html',1,'(Global Namespace)'],['../config_2mod_8unit_8c.html',1,'(Global Namespace)'],['../mutations_2mod_8unit_8c.html',1,'(Global Namespace)']]],
+  ['model_10',['Branching Model',['../md_docs_2VERSIONING.html#autotoc_md92',1,'']]],
+  ['multi_20threading_11',['5. Multi-threading',['../md_docs_2ALGORITHM.html#autotoc_md5',1,'']]],
+  ['mutation_20functions_12',['mutation functions',['../md_docs_2ALGORITHM.html#autotoc_md1',1,'1. Mutation Functions'],['../md_docs_2MUTATIONS.html#autotoc_md31',1,'Adding New Mutation Functions'],['../md_docs_2CONTRIBUTING.html#autotoc_md20',1,'Adding New Mutation Functions']]],
+  ['mutations_13',['MUTATIONS',['../md_docs_2MUTATIONS.html',1,'']]],
+  ['mutations_2emd_14',['MUTATIONS.md',['../MUTATIONS_8md.html',1,'']]]
+];

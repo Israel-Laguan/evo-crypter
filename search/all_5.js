@@ -1,5 +1,7 @@
 var searchData=
 [
-  ['error_0',['error',['../structConfig.html#a66fc8b5982e9a36eba7124ad5cf23e23',1,'Config']]],
-  ['evolve_5ffile_1',['evolve_file',['../file_2mod_8c.html#a4efae25594e1a109608915aafa51895b',1,'evolve_file(const char *input_file, const char *output_file, const char *generations, int threads, bool decrypt):&#160;mod.c'],['../file_2mod_8h.html#a4efae25594e1a109608915aafa51895b',1,'evolve_file(const char *input_file, const char *output_file, const char *generations, int threads, bool decrypt):&#160;mod.c']]]
+  ['5_200_0',['Drake (0.5.0)',['../md_docs_2ROADMAP.html#autotoc_md59',1,'']]],
+  ['5_20braces_1',['5. Braces',['../md_docs_2STYLEGUIDE.html#autotoc_md79',1,'']]],
+  ['5_20implementation_2',['5. Implementation',['../md_docs_2PROJECT__IDENTITY.html#autotoc_md54',1,'']]],
+  ['5_20multi_20threading_3',['5. Multi-threading',['../md_docs_2ALGORITHM.html#autotoc_md5',1,'']]]
 ];
