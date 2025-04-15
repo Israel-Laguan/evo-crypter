@@ -6,6 +6,13 @@
 int main(int argc, char* argv[]) {
   Config config = initialize_config(argc, argv);
 
+  /**
+   * @brief Esta función hace algo genial.
+   * @param x número de entrada
+   * @return el doble de x
+   */
+  int duplicar(int x);
+
   if (config.error) {
     free_config(&config);
     return 1;
