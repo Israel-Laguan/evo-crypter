@@ -1,4 +1,4 @@
-name: Main Build and Release
+name: Setup and deploy Github Pages
 
 on:
   push:
