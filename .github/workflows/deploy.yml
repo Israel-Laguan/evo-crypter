@@ -1,0 +1,43 @@
+name: Setup and deploy Github Pages
+
+on:
+  push:
+    paths:
+      - '**/*.c'
+      - '**/*.h'
+      - '**/*.md'
+    branches:
+      - main
+      - dev
+
+jobs:
+  build-and-release:
+    name: Build and Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y doxygen
+
+      - name: Generate Doxygen Documentation
+        run: doxygen Doxyfile
+
+      - name: Upload Docs to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs/html
+
+      - name: 📢 Show GitHub Pages URL
+        run: |
+          echo "📘 Here is the link: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
