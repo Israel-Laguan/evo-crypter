@@ -6,7 +6,7 @@ on:
       - '**/*.c'
       - '**/*.h'
     branches:
-      - main
+      - feat/set-up-gitHub-pages-for-project-documentation
 
 jobs:
   build-and-release:
