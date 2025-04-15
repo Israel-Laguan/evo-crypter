@@ -5,6 +5,7 @@ on:
     paths:
       - '**/*.c'
       - '**/*.h'
+      - '**/*.md'
     branches:
       - feat/set-up-gitHub-pages-for-project-documentation
 
@@ -25,7 +26,7 @@ jobs:
       - name: Install Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y libcmocka-dev clang clang-tidy clang-format cppcheck doxygen
+          sudo apt-get install -y doxygen
 
       - name: Generate Doxygen Documentation
         run: doxygen Doxyfile
