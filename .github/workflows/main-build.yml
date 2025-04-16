@@ -6,7 +6,7 @@ on:
       - '**/*.c'
       - '**/*.h'
     branches:
-      - feat/automate-gitHub-release-creation-and-asset-upload
+      - main
 
 jobs:
   build-and-release:
