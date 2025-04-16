@@ -30,7 +30,7 @@ jobs:
 
       - name: Get current version
         id: get_version
-      - run: |
+        run: |
           version=$(tr -d '\n' < version.txt)
           echo "Detected version: '$version'"
           echo "current_version=$version" >> $GITHUB_OUTPUT
