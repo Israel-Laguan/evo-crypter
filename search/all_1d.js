@@ -25,5 +25,6 @@ var searchData=
   ['style_22',['12. Deviations from Linux Kernel Style',['../md_docs_2STYLEGUIDE.html#autotoc_md86',1,'']]],
   ['style_20guide_23',['Evo-Crypter Coding Style Guide',['../md_docs_2STYLEGUIDE.html',1,'']]],
   ['style_3a_24',['Overall Style:',['../md_docs_2PROJECT__IDENTITY.html#autotoc_md48',1,'']]],
-  ['styleguide_2emd_25',['STYLEGUIDE.md',['../STYLEGUIDE_8md.html',1,'']]]
+  ['styleguide_2emd_25',['STYLEGUIDE.md',['../STYLEGUIDE_8md.html',1,'']]],
+  ['sumar_26',['sumar',['../main_8c.html#ad2fc341d60a4e2d9598d41b04d4e513a',1,'main.c']]]
 ];
