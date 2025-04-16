@@ -9,7 +9,7 @@
   }
 
     // Función para sumar dos números enteros
-    int sumar(int a, int b) {
+    int sumar2(int a, int b) {
       return a + b;
     }
 
