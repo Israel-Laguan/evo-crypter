@@ -12,7 +12,7 @@ on:
 
 jobs:
   build-and-release:
-    name: Build and Release
+    name: Deploy github page
     runs-on: ubuntu-latest
     permissions:
       contents: write
