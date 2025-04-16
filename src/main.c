@@ -8,6 +8,11 @@
     return a + b;
   }
 
+    // Función para sumar dos números enteros
+    int sumar(int a, int b) {
+      return a + b;
+    }
+
 int main(int argc, char* argv[]) {
   Config config = initialize_config(argc, argv);
 
