@@ -3,6 +3,8 @@
 #include "file/mod.h"
 #include "mutations/mod.h"
 
+int test = 0; // Global variable for testing purposes
+
 int main(int argc, char* argv[]) {
   Config config = initialize_config(argc, argv);
 
