@@ -28,7 +28,6 @@ jobs:
           git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
 
           echo "${{ github.base_ref }} ${{ github.head_ref }}"
-          git pull origin ${{ github.event.pull_request.head.ref }} --rebase
 
           if [[ "${{ github.base_ref }}" == "feat/automate-semantic-versioning-on-pr-merge" && "${{ github.head_ref }}" == "dev" ]]; then
             NEW_VERSION=$(echo "${{ steps.get_version.outputs.current_version }}" | awk -F. '{ $2 += 1; $3 = 0; print }' OFS=".")
@@ -48,6 +47,3 @@ jobs:
             ./scripts/update_version.sh "$NEW_VERSION"
           fi
 
-          git add version.txt
-          git commit -m "chore: Bump version to $NEW_VERSION"
-          git push origin HEAD:${{ github.head_ref }}
