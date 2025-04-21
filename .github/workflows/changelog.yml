@@ -14,7 +14,7 @@ on:
     inputs:
       release_version:
         description: 'Set Release Version'
-        required: true
+        required: false
 
 jobs:
   build:
@@ -24,13 +24,21 @@ jobs:
       - name: 🔄 Checkout repository
         uses: actions/checkout@v3
 
+      - name: 📥 Get current version from file
+        id: get_version
+        run: |
+          VERSION=$(cat version.txt)
+          echo "🔹 Found version in version.txt: $VERSION"
+          echo "current_version=$VERSION" >> $GITHUB_OUTPUT
+
       - name: 🧪 Log context info
         run: |
           echo "🔹 github.ref: ${{ github.ref }}"
           echo "🔹 github.event_name: ${{ github.event_name }}"
           echo "🔹 github.sha: ${{ github.sha }}"
           echo "🔹 github.actor: ${{ github.actor }}"
-          echo "🔹 release_version (if provided): ${{ github.event.inputs.release_version }}"
+          echo "🔹 release_version (input): ${{ github.event.inputs.release_version }}"
+          echo "🔹 release_version (from file): ${{ steps.get_version.outputs.current_version }}"
 
       - name: 📝 Run Changelog CI
         uses: saadmk11/changelog-ci@v1.1.2
@@ -39,7 +47,7 @@ jobs:
           config_file: .changelog-config.yml
           committer_username: 'github-actions[bot]'
           committer_email: 'github-actions[bot]@users.noreply.github.com'
-          release_version: ${{ github.event.inputs.release_version }}
+          release_version: ${{ github.event.inputs.release_version || steps.get_version.outputs.current_version }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 📦 Commit and push changelog changes
@@ -49,6 +57,6 @@ jobs:
           echo "🔹 Git status before commit:"
           git status
           git add CHANGELOG.md
-          git commit -m "chore: update changelog for release ${{ github.event.inputs.release_version }}" || echo "⚠️ Nothing to commit"
+          git commit -m "chore: update changelog for release ${{ github.event.inputs.release_version || steps.get_version.outputs.current_version }}" || echo "⚠️ Nothing to commit"
           echo "🔹 Pushing changes to: ${{ github.ref }}"
           git push origin HEAD
