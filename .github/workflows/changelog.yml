@@ -16,6 +16,9 @@ on:
         description: 'Set Release Version'
         required: false
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -49,6 +52,10 @@ jobs:
           committer_email: 'github-actions[bot]@users.noreply.github.com'
           release_version: ${{ github.event.inputs.release_version || steps.get_version.outputs.current_version }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          skip_git_push: false
+          create_pr: false
+          commit_changelog: true
+          git_branch: ${{ github.head_ref || github.ref_name }}
 
       - name: 📦 Commit and push changelog changes
         run: |
