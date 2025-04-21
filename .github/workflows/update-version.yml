@@ -20,6 +20,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
       - name: Get current version
         id: get_version
         run: |
@@ -34,23 +35,29 @@ jobs:
           git config --global user.name 'github-actions[bot]'
           git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
 
-          echo "${{ github.base_ref }} ${{ github.head_ref }}"
-          git pull origin ${{ github.event.pull_request.head.ref }} --rebase
+          BASE_REF="${{ github.event.pull_request.base.ref }}"
+          HEAD_REF="${{ github.event.pull_request.head.ref }}"
 
-          if [[ "${{ github.base_ref }}" == "main" && "${{ github.head_ref }}" == "dev" ]]; then
-            NEW_VERSION=$(echo "${{ steps.get_version.outputs.current_version }}" | awk -F. '{ $2 += 1; $3 = 0; print }' OFS=".")
-            ./scripts/update_version.sh "$NEW_VERSION"
-          elif [[ "${{ github.base_ref }}" == "main" && "${{ github.head_ref }}" =~ ^release/.* ]]; then
-            NEW_VERSION=$(echo "${{ steps.get_version.outputs.current_version }}" | awk -F. '{ $1 += 1; $2 = $3 = 0; print }' OFS=".")
-            ./scripts/update_version.sh "$NEW_VERSION"
-          elif [[ "${{ github.base_ref }}" == "main" && "${{ github.head_ref }}" =~ ^hotfix/.* ]]; then
-            NEW_VERSION=$(echo "${{ steps.get_version.outputs.current_version }}" | awk -F. '{ $NF += 1; print }' OFS=".")
-            ./scripts/update_version.sh "$NEW_VERSION"
-          elif [[ "${{ github.base_ref }}" == "dev" ]]; then
-            NEW_VERSION=$(echo "${{ steps.get_version.outputs.current_version }}" | awk -F. '{ $NF += 1; print }' OFS=".")
-            ./scripts/update_version.sh "$NEW_VERSION"
+          echo "Base: $BASE_REF | Head: $HEAD_REF"
+          git pull origin "$HEAD_REF" --rebase
+
+          CURRENT_VERSION="${{ steps.get_version.outputs.current_version }}"
+
+          if [[ "$BASE_REF" == "main" && "$HEAD_REF" == "dev" ]]; then
+            NEW_VERSION=$(echo "$CURRENT_VERSION" | awk -F. '{ $2 += 1; $3 = 0; print }' OFS=".")
+          elif [[ "$BASE_REF" == "main" && "$HEAD_REF" =~ ^release/.* ]]; then
+            NEW_VERSION=$(echo "$CURRENT_VERSION" | awk -F. '{ $1 += 1; $2 = $3 = 0; print }' OFS=".")
+          elif [[ "$BASE_REF" == "main" && "$HEAD_REF" =~ ^hotfix/.* ]]; then
+            NEW_VERSION=$(echo "$CURRENT_VERSION" | awk -F. '{ $NF += 1; print }' OFS=".")
+          elif [[ "$BASE_REF" == "dev" ]]; then
+            NEW_VERSION=$(echo "$CURRENT_VERSION" | awk -F. '{ $NF += 1; print }' OFS=".")
+          else
+            echo "❌ No matching condition for version bump."
+            exit 0
           fi
+
+          ./scripts/update_version.sh "$NEW_VERSION"
 
           git add version.txt
           git commit -m "chore: Bump version to $NEW_VERSION"
-          git push origin HEAD:${{ github.head_ref }}
+          git push origin HEAD:"$HEAD_REF"
