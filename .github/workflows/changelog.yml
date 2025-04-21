@@ -1,8 +1,14 @@
 name: Changelog CI
 
 on:
+  push:
+    branches:
+      - dev
+      - main
+      - feat/automate-changelog-generation
+
   pull_request:
-    types: [ opened ]
+    types: [opened]
 
   workflow_dispatch:
     inputs:
@@ -10,18 +16,23 @@ on:
         description: 'Set Release Version'
         required: true
 
-  push:
-    branches:
-      - dev
-
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - name: 🔄 Checkout repository
+        uses: actions/checkout@v3
 
-      - name: Run Changelog CI
+      - name: 🧪 Log context info
+        run: |
+          echo "🔹 github.ref: ${{ github.ref }}"
+          echo "🔹 github.event_name: ${{ github.event_name }}"
+          echo "🔹 github.sha: ${{ github.sha }}"
+          echo "🔹 github.actor: ${{ github.actor }}"
+          echo "🔹 release_version (if provided): ${{ github.event.inputs.release_version }}"
+
+      - name: 📝 Run Changelog CI
         uses: saadmk11/changelog-ci@v1.1.2
         with:
           changelog_filename: CHANGELOG.md
@@ -30,3 +41,14 @@ jobs:
           committer_email: 'github-actions[bot]@users.noreply.github.com'
           release_version: ${{ github.event.inputs.release_version }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 📦 Commit and push changelog changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          echo "🔹 Git status before commit:"
+          git status
+          git add CHANGELOG.md
+          git commit -m "chore: update changelog for release ${{ github.event.inputs.release_version }}" || echo "⚠️ Nothing to commit"
+          echo "🔹 Pushing changes to: ${{ github.ref }}"
+          git push origin HEAD
