@@ -29,7 +29,7 @@ jobs:
 
           echo "${{ github.base_ref }} ${{ github.head_ref }}"
 
-          if [[ "${{ github.base_ref }}" == "feat/automate-semantic-versioning-on-pr-merge" && "${{ github.head_ref }}" == "dev" ]]; then
+          if [[ "${{ github.base_ref }}" == "feat/automate-semantic-versioning-on-pr-merge" && "${{ github.head_ref }}" == "test" ]]; then
             NEW_VERSION=$(echo "${{ steps.get_version.outputs.current_version }}" | awk -F. '{ $2 += 1; $3 = 0; print }' OFS=".")
             echo "🔧 Bumping MINOR version to $NEW_VERSION"
             ./scripts/update_version.sh "$NEW_VERSION"
