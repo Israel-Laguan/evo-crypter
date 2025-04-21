@@ -49,6 +49,7 @@ jobs:
           committer_email: 'github-actions[bot]@users.noreply.github.com'
           release_version: ${{ github.event.inputs.release_version || steps.get_version.outputs.current_version }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          skip_git_push: true
 
       - name: 📦 Commit and push changelog changes
         run: |
