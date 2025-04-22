@@ -1,14 +1,9 @@
 name: Changelog CI
 
 on:
-  push:
-    branches:
-      - dev
-      - main
-      - feat/automate-changelog-generation
-
   pull_request:
-    types: [opened]
+    types: [closed]
+    branches: [ "main", "dev" ]
 
   workflow_dispatch:
     inputs:
@@ -33,15 +28,6 @@ jobs:
           VERSION=$(cat version.txt)
           echo "🔹 Found version in version.txt: $VERSION"
           echo "current_version=$VERSION" >> $GITHUB_OUTPUT
-
-      - name: 🧪 Log context info
-        run: |
-          echo "🔹 github.ref: ${{ github.ref }}"
-          echo "🔹 github.event_name: ${{ github.event_name }}"
-          echo "🔹 github.sha: ${{ github.sha }}"
-          echo "🔹 github.actor: ${{ github.actor }}"
-          echo "🔹 release_version (input): ${{ github.event.inputs.release_version }}"
-          echo "🔹 release_version (from file): ${{ steps.get_version.outputs.current_version }}"
 
       - name: 📝 Run Changelog CI
         uses: saadmk11/changelog-ci@v1.1.2
