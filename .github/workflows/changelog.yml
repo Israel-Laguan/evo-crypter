@@ -57,14 +57,6 @@ jobs:
           commit_changelog: true
           git_branch: ${{ github.head_ref || github.ref_name }}
 
-      - name: Fix Git permissions
-        run: sudo chmod -R u+rwX .git
-
-      - name: Show .git permissions
-        run: |
-          ls -la .git
-          ls -la .git/refs/remotes/origin/
-
       - name: 📦 Commit and push changelog changes
         run: |
           git config user.name "github-actions[bot]"

@@ -15,6 +15,7 @@ group_config:
     labels:
       - bug
       - bugfix
+      - fix
   - title: Code Improvements
     labels:
       - improvements
