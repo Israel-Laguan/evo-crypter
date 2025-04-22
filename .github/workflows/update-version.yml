@@ -39,7 +39,7 @@ jobs:
           HEAD_REF="${{ github.event.pull_request.head.ref }}"
 
           echo "Base: $BASE_REF | Head: $HEAD_REF"
-          git pull origin "$HEAD_REF" --rebase
+          git pull origin "$HEAD_REF"
 
           CURRENT_VERSION="${{ steps.get_version.outputs.current_version }}"
 
