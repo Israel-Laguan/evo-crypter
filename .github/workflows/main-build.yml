@@ -4,15 +4,21 @@ on:
   pull_request:
     types:
       - closed
+    branches:
+      - main
     paths:
       - '**/*.c'
       - '**/*.h'
-    branches:
-      - main
 
 jobs:
+  if_merged:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "✅ The PR was merged"
+
   build-and-release:
-    if: ${{ github.event.pull_request.merged == true }}
+    if: github.event.pull_request.merged == true
     name: Build and Release
     runs-on: ubuntu-latest
     permissions:

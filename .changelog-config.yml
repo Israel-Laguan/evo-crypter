@@ -15,6 +15,7 @@ group_config:
     labels:
       - bug
       - bugfix
+      - fix
   - title: Code Improvements
     labels:
       - improvements
@@ -22,6 +23,7 @@ group_config:
   - title: New Features
     labels:
       - feature
+      - feat
   - title: Documentation Updates
     labels:
       - docs

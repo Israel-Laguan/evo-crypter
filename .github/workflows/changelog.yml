@@ -2,31 +2,54 @@ name: Changelog CI
 
 on:
   pull_request:
-    types: [ opened ]
+    types: [closed]
+    branches: [ "main", "dev" ]
 
   workflow_dispatch:
     inputs:
       release_version:
         description: 'Set Release Version'
-        required: true
+        required: false
 
-  push:
-    branches:
-      - dev
+permissions:
+  contents: write
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - name: 🔄 Checkout repository
+        uses: actions/checkout@v3
 
-      - name: Run Changelog CI
+      - name: 📥 Get current version from file
+        id: get_version
+        run: |
+          VERSION=$(cat version.txt)
+          echo "🔹 Found version in version.txt: $VERSION"
+          echo "current_version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: 📝 Run Changelog CI
         uses: saadmk11/changelog-ci@v1.1.2
         with:
           changelog_filename: CHANGELOG.md
           config_file: .changelog-config.yml
           committer_username: 'github-actions[bot]'
           committer_email: 'github-actions[bot]@users.noreply.github.com'
-          release_version: ${{ github.event.inputs.release_version }}
+          release_version: ${{ github.event.inputs.release_version || steps.get_version.outputs.current_version }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          skip_git_push: false
+          create_pr: false
+          commit_changelog: true
+          git_branch: ${{ github.head_ref || github.ref_name }}
+
+      - name: 📦 Commit and push changelog changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          echo "🔹 Git status before commit:"
+          git status
+          git add CHANGELOG.md
+          git commit -m "chore: update changelog for release ${{ github.event.inputs.release_version || steps.get_version.outputs.current_version }}" || echo "⚠️ Nothing to commit"
+          echo "🔹 Pushing changes to: ${{ github.ref }}"
+          git push origin HEAD
