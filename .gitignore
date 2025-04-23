@@ -59,5 +59,8 @@ encryptor
 encrypted
 decrypted
 functions.c
-.vscode/
 *.gcda
+branch_structure.json
+temp_auto_push.bat
+temp_interactive_push.bat
+.gitignore
