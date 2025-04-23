@@ -40,7 +40,8 @@ jobs:
 
           echo "Base: $BASE_REF | Head: $HEAD_REF"
           git config --global pull.rebase false
-          git pull origin "$HEAD_REF"
+          git fetch origin "$HEAD_REF"
+          git checkout "$HEAD_REF"
 
           CURRENT_VERSION="${{ steps.get_version.outputs.current_version }}"
 
