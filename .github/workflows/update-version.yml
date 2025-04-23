@@ -62,4 +62,4 @@ jobs:
 
           git add version.txt
           git commit -m "chore: Bump version to $NEW_VERSION"
-          git push origin HEAD:"$HEAD_REF"
+          git push origin HEAD:"$BASE_REF"
