@@ -39,7 +39,7 @@ jobs:
           HEAD_REF="${{ github.event.pull_request.head.ref }}"
 
           echo "Base: $BASE_REF | Head: $HEAD_REF"
-          git config --global pull.rebase false
+
           git fetch origin "$HEAD_REF"
           git checkout "$HEAD_REF"
 
