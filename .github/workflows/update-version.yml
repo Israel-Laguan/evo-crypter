@@ -3,7 +3,7 @@ name: Update Version on PR to Main
 on:
   pull_request:
     types: [closed]
-    branches: [ "main", "dev" ]
+    branches: [ "main", "dev", "feat/enhance-test-failure-reporting-in-pr" ]
 
 jobs:
   if_merged:

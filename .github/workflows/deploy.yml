@@ -3,7 +3,7 @@ name: Setup and deploy Github Pages
 on:
   pull_request:
     types: [closed]
-    branches: [ "main", "dev" ]
+    branches: [ "main", "dev", "feat/enhance-test-failure-reporting-in-pr" ]
     paths:
       - '**/*.c'
       - '**/*.h'
