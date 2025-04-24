@@ -3,7 +3,7 @@ name: Changelog CI
 on:
   pull_request:
     types: [closed]
-    branches: [ "main", "dev" ]
+    branches: [ "main", "dev", "feat/enhance-test-failure-reporting-in-pr" ]
 
   workflow_dispatch:
     inputs:

@@ -6,6 +6,7 @@ on:
       - closed
     branches:
       - main
+      - feat/enhance-test-failure-reporting-in-pr
     paths:
       - '**/*.c'
       - '**/*.h'
