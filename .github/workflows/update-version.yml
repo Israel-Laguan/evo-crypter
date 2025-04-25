@@ -1,8 +1,7 @@
 name: Update Version on PR to Main
 
 on:
-  pull_request:
-    types: [closed]
+  push:
     branches: [ "main", "dev", "feat/enhance-test-failure-reporting-in-pr" ]
 
 jobs:
