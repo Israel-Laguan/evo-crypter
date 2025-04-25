@@ -26,14 +26,28 @@ jobs:
       - name: Build project (Debug) and Run tests
         run: ./scripts/test.sh 2> test-errors.txt || echo "found_test_errors=true" >> $GITHUB_ENV
 
+      - name: Build PR message
+        if: env.found_lint_errors == 'true' || env.found_test_errors == 'true'
+        run: |
+          echo "## ❌ PR Checks Failed:" > pr_message.txt
+
+          if [ "${{ env.found_lint_errors }}" = "true" ]; then
+            echo -e "\n### Linter Errors:\n\`\`\`" >> pr_message.txt
+            cat lint-errors.txt >> pr_message.txt
+            echo -e "\n\`\`\`" >> pr_message.txt
+          fi
+
+          if [ "${{ env.found_test_errors }}" = "true" ]; then
+            echo -e "\n### Test Errors:\n\`\`\`" >> pr_message.txt
+            cat test-errors.txt >> pr_message.txt
+            echo -e "\n\`\`\`" >> pr_message.txt
+          fi
+
       - name: Comment PR with errors
         if: env.found_lint_errors == 'true' || env.found_test_errors == 'true'
         uses: mshick/add-pr-comment@v2
         with:
-          message: |
-            ## ❌ PR Checks Failed:
-            ${{ env.found_lint_errors == 'true' && '### Linter Errors:\n```\n' + github.event.pull_request.head.sha + '\nCheck lint-errors.txt for details.\n```' }}
-            ${{ env.found_test_errors == 'true' && '### Test Errors:\n```\n' + github.event.pull_request.head.sha + '\nCheck test-errors.txt for details.\n```' }}
+          message-path: pr_message.txt
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
