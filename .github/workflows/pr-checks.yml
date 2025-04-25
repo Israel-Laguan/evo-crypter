@@ -2,7 +2,7 @@ name: PR Checks
 
 on:
   push:
-    branches: [ "main", "dev", "**" ]
+    branches: [ "main", "dev", "feat/enhance-test-failure-reporting-in-pr" ]
 
 jobs:
   lint-test-build:
@@ -11,6 +11,7 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -21,19 +22,35 @@ jobs:
           sudo apt-get install -y libcmocka-dev clang clang-tidy clang-format cppcheck
 
       - name: Run linter
-        run: ./scripts/lint.sh 2> lint-errors.txt || echo "found_lint_errors=true" >> $GITHUB_ENV
+        run: |
+          ./scripts/lint.sh 2> lint-errors.txt || echo "found_lint_errors=true" >> $GITHUB_ENV
 
       - name: Build project (Debug) and Run tests
-        run: ./scripts/test.sh 2> test-errors.txt || echo "found_test_errors=true" >> $GITHUB_ENV
+        run: |
+          ./scripts/test.sh 2> test-errors.txt || echo "found_test_errors=true" >> $GITHUB_ENV
+
+      - name: Build PR message
+        if: env.found_lint_errors == 'true' || env.found_test_errors == 'true'
+        run: |
+          echo "## ❌ PR Checks Failed 🚨" > pr_message.txt
+
+          if [ "$found_lint_errors" = "true" ]; then
+            echo -e "\n### 🔍 Linter Errors:\n\`\`\`" >> pr_message.txt
+            cat lint-errors.txt >> pr_message.txt
+            echo -e "\n\`\`\`" >> pr_message.txt
+          fi
+
+          if [ "$found_test_errors" = "true" ]; then
+            echo -e "\n### 🧪 Test Errors:\n\`\`\`" >> pr_message.txt
+            cat test-errors.txt >> pr_message.txt
+            echo -e "\n\`\`\`" >> pr_message.txt
+          fi
 
       - name: Comment PR with errors
         if: env.found_lint_errors == 'true' || env.found_test_errors == 'true'
         uses: mshick/add-pr-comment@v2
         with:
-          message: |
-            ## ❌ PR Checks Failed:
-            ${{ env.found_lint_errors == 'true' && '### Linter Errors:\n```\n' + github.event.pull_request.head.sha + '\nCheck lint-errors.txt for details.\n```' }}
-            ${{ env.found_test_errors == 'true' && '### Test Errors:\n```\n' + github.event.pull_request.head.sha + '\nCheck test-errors.txt for details.\n```' }}
+          message-path: pr_message.txt
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

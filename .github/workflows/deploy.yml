@@ -58,16 +58,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-        uses: mshick/add-pr-comment@v2
-        with:
-          message: |
-            ### ⚠️ Errores al generar la documentación con Doxygen:
-            ```
-            ${{ steps.check-errors.outputs.errors }}
-            ```
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Upload Docs to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
