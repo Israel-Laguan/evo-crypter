@@ -54,17 +54,22 @@ jobs:
         if: steps.check_pr.outputs.pr_exists == 'false'
         run: ./scripts/test.sh 2> test-errors.txt || echo "found_test_errors=true" >> $GITHUB_ENV
 
+      - name: Construct error message
+        if: env.found_lint_errors == 'true' || env.found_test_errors == 'true'
+        run: |
+          echo "## ❌ Push Checks Failed:" >> pr_message.txt
+          if [ "${{ env.found_lint_errors }}" == "true" ]; then
+            echo -e "\n### Linter Errors:\n\`\`\`\n$(cat lint-errors.txt)\n\`\`\`" >> pr_message.txt
+          fi
+          if [ "${{ env.found_test_errors }}" == "true" ]; then
+            echo -e "\n### Test Errors:\n\`\`\`\n$(cat test-errors.txt)\n\`\`\`" >> pr_message.txt
+          fi
+
       - name: Comment PR with errors
         if: env.found_lint_errors == 'true' || env.found_test_errors == 'true'
         uses: mshick/add-pr-comment@v2
         with:
-          message: |
-            ## ❌ Push Checks Failed:
-            ${{
-              env.found_lint_errors == 'true' && '### Linter Errors:\n```\n' + steps.linter_output.outputs.errors + '\n```'
-            }}
-            ${{
-              env.found_test_errors == 'true' && '### Test Errors:\n```\n' + steps.test_output.outputs.errors + '\n```'
-            }}
+          message-path: pr_message.txt
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
