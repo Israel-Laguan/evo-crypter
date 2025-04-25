@@ -2,13 +2,11 @@ name: Setup and deploy Github Pages
 
 on:
   push:
+    branches: [ "main", "dev", "feat/enhance-test-failure-reporting-in-pr" ]
     paths:
       - '**/*.c'
       - '**/*.h'
       - '**/*.md'
-    branches:
-      - main
-      - dev
 
 jobs:
   build-and-release:
@@ -18,6 +16,7 @@ jobs:
       contents: write
       pages: write
       id-token: write
+      pull-requests: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -30,7 +29,33 @@ jobs:
           sudo apt-get install -y doxygen
 
       - name: Generate Doxygen Documentation
-        run: doxygen Doxyfile
+        id: generate-docs
+        run: |
+          doxygen Doxyfile 2> doxygen-errors.txt || true
+
+      - name: Check for Doxygen errors
+        id: check-errors
+        run: |
+          if [ -s doxygen-errors.txt ]; then
+            echo "found_errors=true" >> $GITHUB_OUTPUT
+            echo "errors<<EOF" >> $GITHUB_OUTPUT
+            cat doxygen-errors.txt >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+          else
+            echo "found_errors=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit errors in PR
+        if: steps.check-errors.outputs.found_errors == 'true'
+        uses: mshick/add-pr-comment@v2
+        with:
+          message: |
+            ### ⚠️ Errores al generar la documentación con Doxygen:
+            ```
+            ${{ steps.check-errors.outputs.errors }}
+            ```
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload Docs to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3

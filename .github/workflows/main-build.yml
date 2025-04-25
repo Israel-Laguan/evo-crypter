@@ -1,59 +1,76 @@
 name: Main Build and Release
 
 on:
-  pull_request:
-    types:
-      - closed
+  push:
     branches:
       - main
+      - feat/enhance-test-failure-reporting-in-pr
     paths:
       - '**/*.c'
       - '**/*.h'
 
 jobs:
   if_merged:
-    if: github.event.pull_request.merged == true
+    #if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - run: echo "✅ The PR was merged"
 
   build-and-release:
-    if: github.event.pull_request.merged == true
+    #if: github.event.pull_request.merged == true
     name: Build and Release
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pull-requests: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0  # Fetch all history for git tag
+          fetch-depth: 0
 
       - name: Install Dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y libcmocka-dev clang clang-tidy clang-format cppcheck
 
-      - name: Build project (Release)
-        run: ./scripts/build.sh build Release
-
-      - name: Get current version
-        id: get_version
+      - name: Attempt build and release
+        id: build_step
         run: |
-          version=$(tr -d '\n' < version.txt)
-          echo "Detected version: '$version'"
-          echo "current_version=$version" >> $GITHUB_OUTPUT
+          {
+            ./scripts/build.sh build Release
+            version=$(tr -d '\n' < version.txt)
+            echo "Detected version: '$version'"
+            echo "current_version=$version" >> $GITHUB_OUTPUT
 
-      - name: Create GitHub release
-        uses: softprops/action-gh-release@v1
-        if: ${{ success() }}
+            gh release create "v$version" \
+              --title "Release v$version" \
+              --notes "## Release v$version\nThis release includes the evo-crypter executable." \
+              build/evo
+          } 2> build-errors.txt || echo "found_errors=true" >> $GITHUB_OUTPUT
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check for errors
+        id: check-errors
+        run: |
+          if [ -s build-errors.txt ]; then
+            echo "found_errors=true" >> $GITHUB_OUTPUT
+            echo "errors<<EOF" >> $GITHUB_OUTPUT
+            cat build-errors.txt >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+          else
+            echo "found_errors=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Comment PR with build/release errors
+        if: steps.check-errors.outputs.found_errors == 'true'
+        uses: mshick/add-pr-comment@v2
         with:
-          tag_name: v${{ steps.get_version.outputs.current_version }}
-          name: Release v${{ steps.get_version.outputs.current_version }}
-          draft: false
-          prerelease: false
-          body: |
-            ## Release v${{ steps.get_version.outputs.current_version }}
-            This release includes the evo-crypter executable.
-          files: |
-            build/evo
+          message: |
+            ### ❌ Error al compilar o hacer release:
+            ```
+            ${{ steps.check-errors.outputs.errors }}
+            ```
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

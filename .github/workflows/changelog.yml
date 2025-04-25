@@ -1,9 +1,8 @@
 name: Changelog CI
 
 on:
-  pull_request:
-    types: [closed]
-    branches: [ "main", "dev" ]
+  push:
+    branches: [ "main", "dev", "feat/enhance-test-failure-reporting-in-pr" ]
 
   workflow_dispatch:
     inputs:
@@ -13,6 +12,7 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
   build:
@@ -30,6 +30,8 @@ jobs:
           echo "current_version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: 📝 Run Changelog CI
+        id: changelog
+        continue-on-error: true
         uses: saadmk11/changelog-ci@v1.1.2
         with:
           changelog_filename: CHANGELOG.md
@@ -43,7 +45,19 @@ jobs:
           commit_changelog: true
           git_branch: ${{ github.head_ref || github.ref_name }}
 
+      - name: ❌ Report changelog failure
+        if: steps.changelog.outcome == 'failure'
+        uses: mshick/add-pr-comment@v2
+        with:
+          message: |
+            ## ❌ Changelog CI failed
+            Something went wrong while generating or pushing the changelog.
+            Please check the logs for details.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: 📦 Commit and push changelog changes
+        if: steps.changelog.outcome == 'success'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"

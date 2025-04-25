@@ -1,22 +1,22 @@
 name: Update Version on PR to Main
 
 on:
-  pull_request:
-    types: [closed]
-    branches: [ "main", "dev" ]
+  push:
+    branches: [ "main", "dev", "feat/enhance-test-failure-reporting-in-pr" ]
 
 jobs:
   if_merged:
-    if: github.event.pull_request.merged == true
+    #if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - run: echo "✅ The PR was merged"
 
   update-version:
-    if: github.event.pull_request.merged == true
+    #if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pull-requests: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -28,9 +28,8 @@ jobs:
           echo "Detected version: '$version'"
           echo "current_version=$version" >> $GITHUB_OUTPUT
 
-      - name: Update version based on branch
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Attempt to bump version
+        id: bump
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
@@ -45,21 +44,47 @@ jobs:
 
           CURRENT_VERSION="${{ steps.get_version.outputs.current_version }}"
 
-          if [[ "$BASE_REF" == "main" && "$HEAD_REF" == "dev" ]]; then
-            NEW_VERSION=$(echo "$CURRENT_VERSION" | awk -F. '{ $2 += 1; $3 = 0; print }' OFS=".")
-          elif [[ "$BASE_REF" == "main" && "$HEAD_REF" =~ ^release/.* ]]; then
-            NEW_VERSION=$(echo "$CURRENT_VERSION" | awk -F. '{ $1 += 1; $2 = $3 = 0; print }' OFS=".")
-          elif [[ "$BASE_REF" == "main" && "$HEAD_REF" =~ ^hotfix/.* ]]; then
-            NEW_VERSION=$(echo "$CURRENT_VERSION" | awk -F. '{ $NF += 1; print }' OFS=".")
-          elif [[ "$BASE_REF" == "dev" ]]; then
-            NEW_VERSION=$(echo "$CURRENT_VERSION" | awk -F. '{ $NF += 1; print }' OFS=".")
+          {
+            if [[ "$BASE_REF" == "main" && "$HEAD_REF" == "dev" ]]; then
+              NEW_VERSION=$(echo "$CURRENT_VERSION" | awk -F. '{ $2 += 1; $3 = 0; print }' OFS=".")
+            elif [[ "$BASE_REF" == "main" && "$HEAD_REF" =~ ^release/.* ]]; then
+              NEW_VERSION=$(echo "$CURRENT_VERSION" | awk -F. '{ $1 += 1; $2 = $3 = 0; print }' OFS=".")
+            elif [[ "$BASE_REF" == "main" && "$HEAD_REF" =~ ^hotfix/.* ]]; then
+              NEW_VERSION=$(echo "$CURRENT_VERSION" | awk -F. '{ $NF += 1; print }' OFS=".")
+            elif [[ "$BASE_REF" == "dev" ]]; then
+              NEW_VERSION=$(echo "$CURRENT_VERSION" | awk -F. '{ $NF += 1; print }' OFS=".")
+            else
+              echo "❌ No matching condition for version bump."
+              exit 1
+            fi
+
+            ./scripts/update_version.sh "$NEW_VERSION"
+
+            git add version.txt
+            git commit -m "chore: Bump version to $NEW_VERSION"
+            git push origin HEAD:"$BASE_REF"
+          } 2> bump-errors.txt || echo "found_errors=true" >> $GITHUB_OUTPUT
+
+      - name: Check for errors
+        id: check-errors
+        run: |
+          if [ -s bump-errors.txt ]; then
+            echo "found_errors=true" >> $GITHUB_OUTPUT
+            echo "errors<<EOF" >> $GITHUB_OUTPUT
+            cat bump-errors.txt >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
           else
-            echo "❌ No matching condition for version bump."
-            exit 0
+            echo "found_errors=false" >> $GITHUB_OUTPUT
           fi
 
-          ./scripts/update_version.sh "$NEW_VERSION"
-
-          git add version.txt
-          git commit -m "chore: Bump version to $NEW_VERSION"
-          git push origin HEAD:"$BASE_REF"
+      - name: Comment PR with version bump errors
+        if: steps.check-errors.outputs.found_errors == 'true'
+        uses: mshick/add-pr-comment@v2
+        with:
+          message: |
+            ### ⚠️ Error al intentar actualizar la versión automáticamente:
+            ```
+            ${{ steps.check-errors.outputs.errors }}
+            ```
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

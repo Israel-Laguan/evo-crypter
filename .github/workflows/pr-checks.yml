@@ -1,14 +1,17 @@
 name: PR Checks
 
 on:
-  pull_request:
-    types: [opened, synchronize, reopened]
-    branches: [ "main", "dev", "**" ]
+  push:
+    branches: [ "main", "dev", "feat/enhance-test-failure-reporting-in-pr" ]
 
 jobs:
   lint-test-build:
     name: Lint, Test, and Build
     runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+      pull-requests: write
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -19,10 +22,37 @@ jobs:
           sudo apt-get install -y libcmocka-dev clang clang-tidy clang-format cppcheck
 
       - name: Run linter
-        run: ./scripts/lint.sh
+        run: |
+          ./scripts/lint.sh 2> lint-errors.txt || echo "found_lint_errors=true" >> $GITHUB_ENV
 
       - name: Build project (Debug) and Run tests
-        run: ./scripts/test.sh # implicit build before tests
+        run: |
+          ./scripts/test.sh 2> test-errors.txt || echo "found_test_errors=true" >> $GITHUB_ENV
+
+      - name: Build PR message
+        if: env.found_lint_errors == 'true' || env.found_test_errors == 'true'
+        run: |
+          echo "## ❌ PR Checks Failed 🚨" > pr_message.txt
+
+          if [ "$found_lint_errors" = "true" ]; then
+            echo -e "\n### 🔍 Linter Errors:\n\`\`\`" >> pr_message.txt
+            cat lint-errors.txt >> pr_message.txt
+            echo -e "\n\`\`\`" >> pr_message.txt
+          fi
+
+          if [ "$found_test_errors" = "true" ]; then
+            echo -e "\n### 🧪 Test Errors:\n\`\`\`" >> pr_message.txt
+            cat test-errors.txt >> pr_message.txt
+            echo -e "\n\`\`\`" >> pr_message.txt
+          fi
+
+      - name: Comment PR with errors
+        if: env.found_lint_errors == 'true' || env.found_test_errors == 'true'
+        uses: mshick/add-pr-comment@v2
+        with:
+          message-path: pr_message.txt
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   codeql-analysis:
     if: ${{ github.event.pull_request.base.ref == 'main' || github.event.pull_request.base.ref == 'dev' }}
@@ -38,18 +68,18 @@ jobs:
         language: [ 'cpp' ]
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v3
-      with:
-        languages: ${{ matrix.language }}
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
 
-    - name: Autobuild
-      uses: github/codeql-action/autobuild@v3
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v3
 
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v3
-      with:
-        category: "/language:${{matrix.language}}"
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:${{ matrix.language }}"
