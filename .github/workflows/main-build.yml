@@ -1,9 +1,7 @@
 name: Main Build and Release
 
 on:
-  pull_request:
-    types:
-      - closed
+  push:
     branches:
       - main
       - feat/enhance-test-failure-reporting-in-pr
