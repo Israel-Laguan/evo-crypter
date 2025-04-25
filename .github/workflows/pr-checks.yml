@@ -11,6 +11,7 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -21,24 +22,26 @@ jobs:
           sudo apt-get install -y libcmocka-dev clang clang-tidy clang-format cppcheck
 
       - name: Run linter
-        run: ./scripts/lint.sh 2> lint-errors.txt || echo "found_lint_errors=true" >> $GITHUB_ENV
+        run: |
+          ./scripts/lint.sh 2> lint-errors.txt || echo "found_lint_errors=true" >> $GITHUB_ENV
 
       - name: Build project (Debug) and Run tests
-        run: ./scripts/test.sh 2> test-errors.txt || echo "found_test_errors=true" >> $GITHUB_ENV
+        run: |
+          ./scripts/test.sh 2> test-errors.txt || echo "found_test_errors=true" >> $GITHUB_ENV
 
       - name: Build PR message
         if: env.found_lint_errors == 'true' || env.found_test_errors == 'true'
         run: |
-          echo "## ❌ PR Checks Failed:" > pr_message.txt
+          echo "## ❌ PR Checks Failed 🚨" > pr_message.txt
 
-          if [ "${{ env.found_lint_errors }}" = "true" ]; then
-            echo -e "\n### Linter Errors:\n\`\`\`" >> pr_message.txt
+          if [ "$found_lint_errors" = "true" ]; then
+            echo -e "\n### 🔍 Linter Errors:\n\`\`\`" >> pr_message.txt
             cat lint-errors.txt >> pr_message.txt
             echo -e "\n\`\`\`" >> pr_message.txt
           fi
 
-          if [ "${{ env.found_test_errors }}" = "true" ]; then
-            echo -e "\n### Test Errors:\n\`\`\`" >> pr_message.txt
+          if [ "$found_test_errors" = "true" ]; then
+            echo -e "\n### 🧪 Test Errors:\n\`\`\`" >> pr_message.txt
             cat test-errors.txt >> pr_message.txt
             echo -e "\n\`\`\`" >> pr_message.txt
           fi
