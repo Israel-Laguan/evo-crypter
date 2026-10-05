@@ -1,0 +1,26 @@
+var searchData=
+[
+  ['a_20command_20to_20run_20a_20script_0',['Example: Adding a Command to Run a Script',['../md_docs_2CMAKE__COMMANDS.html#autotoc_md11',1,'']]],
+  ['a_20new_20flag_1',['Steps to Add a New Flag',['../md_docs_2FLAGS.html#autotoc_md24',1,'']]],
+  ['a_20version_20script_20command_2',['Example: Adding a Version Script Command',['../md_docs_2CMAKE__COMMANDS.html#autotoc_md10',1,'']]],
+  ['acknowledges_3',['Acknowledges',['../md_README.html#autotoc_md114',1,'']]],
+  ['add_20a_20new_20flag_4',['Steps to Add a New Flag',['../md_docs_2FLAGS.html#autotoc_md24',1,'']]],
+  ['add_5fcustom_5fcommand_20tt_5',['Basic Structure of &lt;tt&gt;add_custom_command&lt;/tt&gt;',['../md_docs_2CMAKE__COMMANDS.html#autotoc_md9',1,'']]],
+  ['adding_20a_20command_20to_20run_20a_20script_6',['Example: Adding a Command to Run a Script',['../md_docs_2CMAKE__COMMANDS.html#autotoc_md11',1,'']]],
+  ['adding_20a_20version_20script_20command_7',['Example: Adding a Version Script Command',['../md_docs_2CMAKE__COMMANDS.html#autotoc_md10',1,'']]],
+  ['adding_20custom_20commands_20in_20cmake_8',['Adding Custom Commands in CMake',['../md_docs_2CMAKE__COMMANDS.html',1,'']]],
+  ['adding_20new_20command_20line_20flags_20to_20evo_20crypter_9',['Adding New Command-Line Flags to evo-crypter',['../md_docs_2FLAGS.html',1,'']]],
+  ['adding_20new_20mutation_20functions_10',['adding new mutation functions',['../md_docs_2CONTRIBUTING.html#autotoc_md20',1,'Adding New Mutation Functions'],['../md_docs_2MUTATIONS.html#autotoc_md31',1,'Adding New Mutation Functions']]],
+  ['algorithm_11',['Algorithm',['../md_README.html#autotoc_md105',1,'']]],
+  ['algorithm_20details_20for_20evo_20crypter_12',['Algorithm Details for evo-crypter',['../md_docs_2ALGORITHM.html',1,'']]],
+  ['algorithm_2emd_13',['ALGORITHM.md',['../ALGORITHM_8md.html',1,'']]],
+  ['alternatives_20considered_3a_14',['Alternatives Considered:',['../md_docs_2PROJECT__IDENTITY.html#autotoc_md37',1,'']]],
+  ['ancient_201_201_200_15',['Elder (1.0.0) and Ancient (1.1.0)',['../md_docs_2ROADMAP.html#autotoc_md64',1,'']]],
+  ['and_20ancient_201_201_200_16',['Elder (1.0.0) and Ancient (1.1.0)',['../md_docs_2ROADMAP.html#autotoc_md64',1,'']]],
+  ['and_20help_17',['Questions and Help',['../md_docs_2CONTRIBUTING.html#autotoc_md19',1,'']]],
+  ['apply_5fmutation_5fdown_18',['apply_mutation_down',['../mutations_2mod_8c.html#ab3ca9d9034f75d1b0df37c7e3f4da5b9',1,'apply_mutation_down(char symbol, char *str):&#160;mod.c'],['../mutations_2mod_8h.html#ab3ca9d9034f75d1b0df37c7e3f4da5b9',1,'apply_mutation_down(char symbol, char *str):&#160;mod.c']]],
+  ['apply_5fmutation_5fup_19',['apply_mutation_up',['../mutations_2mod_8c.html#a7b32d493341415c0ac44be120c3c68b1',1,'apply_mutation_up(char symbol, char *str):&#160;mod.c'],['../mutations_2mod_8h.html#a7b32d493341415c0ac44be120c3c68b1',1,'apply_mutation_up(char symbol, char *str):&#160;mod.c']]],
+  ['apply_5fmutations_5fto_5fchunk_20',['apply_mutations_to_chunk',['../mutations_2mod_8c.html#a9c91d8ff602032b8af870e3e205ac067',1,'apply_mutations_to_chunk(void *arg, const char *generations, bool decrypt):&#160;mod.c'],['../mutations_2mod_8h.html#a9c91d8ff602032b8af870e3e205ac067',1,'apply_mutations_to_chunk(void *arg, const char *generations, bool decrypt):&#160;mod.c']]],
+  ['array_20list_20flag_20e_20g_20tt_20exclude_20item1_20item2_20tt_21',['3. Array/List Flag (e.g., &lt;tt&gt;--exclude &lt;item1,item2,...&gt;&lt;/tt&gt;)',['../md_docs_2FLAGS.html#autotoc_md28',1,'']]],
+  ['ascii_20emoji_20unicode_20representation_3a_22',['Current ASCII &amp; Emoji/Unicode Representation:',['../md_docs_2PROJECT__IDENTITY.html#autotoc_md42',1,'']]]
+];
